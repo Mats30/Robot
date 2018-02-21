@@ -28,12 +28,12 @@
 
     <ng-container matColumnDef="new_price">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Nowa cena</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.new_price | currency: 'PLN '}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.new_price | number :'1.2-2' | currency: 'PLN '}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="old_price">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Stara cena</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.old_price | currency: 'PLN '}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.old_price | number :'1.2-2' | currency: 'PLN '}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="url">
