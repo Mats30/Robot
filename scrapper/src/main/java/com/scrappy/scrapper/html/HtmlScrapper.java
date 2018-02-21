@@ -4,6 +4,6 @@ import com.scrappy.scrapper.common.Book;
 
 import java.util.List;
 
-interface HtmlScrapper {
+public interface HtmlScrapper {
   List<Book> scrap();
 }
