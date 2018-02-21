@@ -10,7 +10,7 @@ import {BookService} from "../../services/book.service";
 })
 export class BooksListComponent {
 
-  displayedColumns = ['title', 'author', 'bookshop', 'promotion', 'new_price', "old_price"];
+  displayedColumns = ['title', 'author', 'bookshop', 'category', 'new_price', "old_price", "url"];
   dataSource: MatTableDataSource<Book>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -25,7 +25,6 @@ export class BooksListComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
-
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim();

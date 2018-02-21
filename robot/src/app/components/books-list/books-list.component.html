@@ -21,19 +21,24 @@
       <mat-cell *matCellDef="let row"> {{row.bookshop}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="promotion">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Promocja</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.promotion}}</mat-cell>
+    <ng-container matColumnDef="category">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Kategoria</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.category}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="new_price">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Nowa cena</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.new_price}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.new_price | currency: 'PLN '}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="old_price">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Stara cena</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.old_price}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.old_price | currency: 'PLN '}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="url">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Link</mat-header-cell>
+      <mat-cell *matCellDef="let row"><a target="_blank" href="{{row.url}}">Kup</a></mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
