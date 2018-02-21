@@ -16,6 +16,14 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Scrapper used in swiatksiazki.pl bookstore to retrieve
+ * data about promotions.
+ *
+ * @author Mateusz Tapa
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-21
+ */
 public class SwiatKsiazkiScrapper implements HtmlScrapper {
     @Override
     public List<Book> scrap() {
@@ -89,8 +97,7 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
 
     private BigDecimal retrievePriceFrom(String pattern) {
         if (pattern.isEmpty()) return BigDecimal.ZERO;
-        String price = pattern.split(" ")[0];
-        price = price.replaceAll(",", ".");
+        String price = pattern.split(" ")[0].replaceAll(",", ".");
         return BigDecimal.valueOf(Double.parseDouble(price));
     }
 
@@ -105,6 +112,7 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
             matcher.find();
             return matcher.group();
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
         return "";
@@ -113,12 +121,14 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     private List<String> findPromotionUrls() {
         List<String> links = new ArrayList<>();
         try {
-            final Document doc = Jsoup.connect("https://www.swiatksiazki.pl/swiat-niskich-cen").get();
+            final String baseUrl = "https://www.swiatksiazki.pl";
+            final Document doc = Jsoup.connect(baseUrl + "/swiat-niskich-cen").get();
             final Elements elements = doc.getElementsByClass("col-sm-6 col-md-5 no-padding hidden-xs").tagName("a");
             elements.stream()
                     .filter(Objects::nonNull)
                     .forEach(e -> links.add(e.getElementsByTag("a").attr("href")));
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
         return links;

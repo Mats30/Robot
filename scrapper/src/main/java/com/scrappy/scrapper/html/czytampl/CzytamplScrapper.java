@@ -15,7 +15,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Scrapper used in czytam.pl bookstore to retrieve
+ * data about promotions.
+ *
+ * @author Mateusz Tapa
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-21
+ */
 public class CzytamplScrapper implements HtmlScrapper {
+    private final String baseUrl = "https://czytam.pl";
+
     @Override
     public List<Book> scrap() {
         List<Book> books = new ArrayList<>();
@@ -39,22 +49,21 @@ public class CzytamplScrapper implements HtmlScrapper {
                 e.printStackTrace();
             }
         });
-
         return books;
     }
 
-    public List<Book> scrapFromFile(File file) throws IOException {
+    List<Book> scrapFromFile(File file) throws IOException {
         List<Book> books = new ArrayList<>();
         final Document doc = Jsoup.parse(file, "UTF-8", "");
         final Elements elements = doc.getElementsByClass("col-small-info");
         elements.forEach(e -> books.add(Book.builder()
                 .setAuthor(retrieveAuthorFrom(e))
-                .setBookstore(retrieveBookstore())
-                .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                .setListPrice(retrieveListPriceFrom(e))
-                .setIsbn(retrieveIsbnFrom(e))
                 .setTitle(retrieveTitleFrom(e))
+                .setListPrice(retrieveListPriceFrom(e))
+                .setDiscountPrice(retrieveDiscountPriceFrom(e))
                 .setUrl(retrieveUrlFrom(e))
+                .setIsbn(retrieveIsbnFrom(e))
+                .setBookstore(retrieveBookstore())
                 .build()));
         return books;
     }
@@ -68,7 +77,7 @@ public class CzytamplScrapper implements HtmlScrapper {
     }
 
     private String retrieveUrlFrom(Element element) {
-        return "https://czytam.pl" + element.getElementsByTag("a").attr("href");
+        return baseUrl + element.getElementsByTag("a").attr("href");
     }
 
     private BigDecimal retrieveDiscountPriceFrom(Element element) {
@@ -90,16 +99,17 @@ public class CzytamplScrapper implements HtmlScrapper {
     private List<String> findPromotionUrls() {
         List<String> links = new ArrayList<>();
         try {
-            final Document doc = Jsoup.connect("https://czytam.pl/promocje,1.html").get();
+            final Document doc = Jsoup.connect(baseUrl + "/promocje,1.html").get();
             final String text = doc.getElementsByClass("show-for-medium-up")
                     .tagName("a")
                     .text()
                     .split(" ")[21];
             final int pagesCount = Integer.parseInt(text);
             for (int i = 1; i <= pagesCount; i++) {
-                links.add("https://czytam.pl/promocje," + i + ".html");
+                links.add(baseUrl + "/promocje," + i + ".html");
             }
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
         return links;
@@ -111,11 +121,10 @@ public class CzytamplScrapper implements HtmlScrapper {
             return BigDecimal.ZERO;
         }
         if (discount) {
-            price = pattern.split(" ")[2];
+            price = pattern.split(" ")[2].replaceAll(",", ".");
         } else {
-            price = pattern.split(" ")[0];
+            price = pattern.split(" ")[0].replaceAll(",", ".");
         }
-        price = price.replaceAll(",", ".");
         return BigDecimal.valueOf(Double.parseDouble(price));
     }
 
@@ -130,6 +139,7 @@ public class CzytamplScrapper implements HtmlScrapper {
             matcher.find();
             return matcher.group();
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
         return "";
