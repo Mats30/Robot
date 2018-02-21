@@ -3,6 +3,7 @@ package com.scrappy.database;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories
 public class DatabaseConfig {
 
     @Bean
@@ -25,7 +27,6 @@ public class DatabaseConfig {
         LocalContainerEntityManagerFactoryBean entityFactory = new LocalContainerEntityManagerFactoryBean();
         entityFactory.setPersistenceUnitName("spring-jpa-pu");
         Map<String, String> properties = new HashMap<>();
-        //na razie drop i create
         properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
         entityFactory.setJpaPropertyMap(properties);
         entityFactory.setPackagesToScan("com.scrappy.database");
@@ -37,11 +38,9 @@ public class DatabaseConfig {
     @Bean
     public DataSource createDataSource() {
         BasicDataSource source = new BasicDataSource();
-        source.setUrl("jdbc:postgresql://localhost/test");
-        source.setUsername("criss");
-        source.setPassword("wapim32");
-        source.setDriverClassName("org.postgresql.Driver");
-        //ile chcemy miec polaczen w puli dostepnych?
+        source.setUrl("jdbc:h2:mem:");
+        source.setUsername("sa");
+        source.setDriverClassName("org.h2.Driver");
         source.setInitialSize(10);
         return source;
     }
@@ -49,10 +48,8 @@ public class DatabaseConfig {
     @Bean
     public JpaVendorAdapter createAdapter() {
         HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        adapter.setDatabase(Database.POSTGRESQL);
-        //ustawia DDL
+        adapter.setDatabase(Database.H2);
         adapter.setGenerateDdl(true);
-        //pozwala na logowanie tego jakie kwerendy ida do bazy
         adapter.setShowSql(true);
         return adapter;
     }

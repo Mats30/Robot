@@ -55,4 +55,8 @@ public class Book {
   public void setBookDetails(BookDetails bookDetails) {
     this.bookDetails = bookDetails;
   }
+
+  public BookStore getBookStore() {
+    return bookStore;
+  }
 }
