@@ -15,17 +15,39 @@ import java.util.regex.Pattern;
 import static java.util.Collections.emptyList;
 
 class NiedzielaScrapper implements HtmlScrapper {
+  
+  protected Document retrievePromoBooks() throws IOException {
+    return Jsoup.connect("https://ksiegarnia.niedziela.pl/site/promocje/").get();
+  }
+  
+  protected Document retrieveSinglePromoBook(String url) throws IOException {
+    return Jsoup.connect(url).get();
+  }
+  
+  /**
+   * Iterates through a container on a single page with discounted books
+   * collecting information about them.
+   * ISBNs are scrapped from a page of each book, while the rest is
+   * scrapped from the main page alone.
+   *
+   * @return list of discounted books.
+   */
   @Override
   public List<Book> scrap() {
     try {
-      List<Book> books = new ArrayList<>();
-      final Document doc = Jsoup.connect("https://ksiegarnia.niedziela.pl/site/promocje/").get();
+      final List<Book> books = new ArrayList<>();
+      final Document doc = this.retrievePromoBooks();
       final Elements elements = doc.getElementsByClass("polecamy");
-      elements.forEach((e) -> {
-        String bookUrl = "https://ksiegarnia.niedziela.pl/" + e.getElementsByTag("a").attr("href");
-        Book book = Book.builder().setTitle(e.getElementsByClass("polecamy_tytul").text())
-                        .setAuthor(e.getElementsByClass("polecamy_dzial").text()).setListPrice
-                                                                                      (retrievePriceFrom(e.getElementsByTag("strike").text())).setDiscountPrice(retrievePriceFrom(e.getElementsByClass("polecamy_cena").tagName("span").get(0).text())).setBookstore("Księgarnia Niedziela").setUrl(bookUrl).setIsbn(retrieveIsbnFrom(bookUrl)).build();
+      elements.forEach(element -> {
+        String bookUrl = "https://ksiegarnia.niedziela.pl/" + element.getElementsByTag("a").attr("href");
+        final Book book = Book.builder()
+                        .setTitle(element.getElementsByClass("polecamy_tytul").text())
+                        .setAuthor(element.getElementsByClass("polecamy_dzial").text())
+                        .setListPrice(retrievePriceFrom(element.getElementsByTag("strike").text()))
+                        .setDiscountPrice(retrievePriceFrom(element.getElementsByClass("polecamy_cena").tagName("span").get(0).text()))
+                        .setBookstore("Księgarnia Niedziela")
+                        .setUrl(bookUrl)
+                        .setIsbn(retrieveIsbnFrom(bookUrl)).build();
         books.add(book);
       });
       return books;
@@ -37,12 +59,12 @@ class NiedzielaScrapper implements HtmlScrapper {
   
   private String retrieveIsbnFrom(String url) {
     try {
-      final Document doc = Jsoup.connect(url).get();
+      final Document doc = this.retrieveSinglePromoBook(url);
       final String regex = "\\d*-\\d*-\\d*-\\d*";
       final Elements elements = doc.getElementsMatchingOwnText(regex);
-      String result = elements.get(0).toString();
-      Pattern pattern = Pattern.compile(regex);
-      Matcher matcher = pattern.matcher(result);
+      final String result = elements.first().toString();
+      final Pattern pattern = Pattern.compile(regex);
+      final Matcher matcher = pattern.matcher(result);
       matcher.find();
       return matcher.group();
     } catch (IOException e) {

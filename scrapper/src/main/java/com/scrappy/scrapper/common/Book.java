@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @AutoValue
 abstract public class Book {
-  abstract String title();
+  abstract public String title();
   abstract String author();
   abstract BigDecimal discountPrice();
   abstract BigDecimal listPrice();
