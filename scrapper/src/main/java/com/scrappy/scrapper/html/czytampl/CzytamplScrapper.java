@@ -1,4 +1,4 @@
-package com.scrappy.scrapper.html.swiatksiazki;
+package com.scrappy.scrapper.html.czytampl;
 
 import com.scrappy.scrapper.common.Book;
 import com.scrappy.scrapper.html.HtmlScrapper;
@@ -12,11 +12,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SwiatKsiazkiScrapper implements HtmlScrapper {
+public class CzytamplScrapper implements HtmlScrapper {
     @Override
     public List<Book> scrap() {
         List<Book> books = new ArrayList<>();
@@ -25,7 +24,7 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
         urlsToScrap.forEach(url -> {
             try {
                 final Document doc = Jsoup.connect(url).get();
-                final Elements elements = doc.getElementsByClass("product details product-item-details");
+                final Elements elements = doc.getElementsByClass("col-small-info");
                 elements.forEach(e -> books.add(Book.builder()
                         .setAuthor(retrieveAuthorFrom(e))
                         .setBookstore(retrieveBookstore())
@@ -40,13 +39,14 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
                 e.printStackTrace();
             }
         });
+
         return books;
     }
 
-    List<Book> scrapFromFile(File file) throws IOException {
+    public List<Book> scrapFromFile(File file) throws IOException {
         List<Book> books = new ArrayList<>();
         final Document doc = Jsoup.parse(file, "UTF-8", "");
-        final Elements elements = doc.getElementsByClass("product details product-item-details");
+        final Elements elements = doc.getElementsByClass("col-small-info");
         elements.forEach(e -> books.add(Book.builder()
                 .setAuthor(retrieveAuthorFrom(e))
                 .setBookstore(retrieveBookstore())
@@ -59,37 +59,62 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
         return books;
     }
 
-    private String retrieveAuthorFrom(Element element) {
-        return element.getElementsByClass("product author product-item-author").text();
-    }
-
-    private String retrieveTitleFrom(Element element) {
-        return element.getElementsByClass("product name product-item-name").text();
-    }
-
-    private BigDecimal retrieveDiscountPriceFrom(Element element) {
-        return retrievePriceFrom(element.getElementsByClass("special-price").text());
-    }
-
-    private BigDecimal retrieveListPriceFrom(Element element) {
-        return retrievePriceFrom(element.getElementsByClass("old-price").text());
-    }
-
     private String retrieveBookstore() {
-        return "Świat Książki";
+        return "Czytam.pl";
     }
 
     private String retrieveIsbnFrom(Element element) {
-        return retrieveIsbnFrom(element.getElementsByClass("product-item-link").attr("href"));
+        return retrieveIsbnFrom(retrieveUrlFrom(element));
     }
 
     private String retrieveUrlFrom(Element element) {
-        return element.getElementsByClass("product-item-link").attr("href");
+        return "https://czytam.pl" + element.getElementsByTag("a").attr("href");
     }
 
-    private BigDecimal retrievePriceFrom(String pattern) {
-        if (pattern.isEmpty()) return BigDecimal.ZERO;
-        String price = pattern.split(" ")[0];
+    private BigDecimal retrieveDiscountPriceFrom(Element element) {
+        return retrieveListPriceFrom(element.getElementsByClass("product-price").text(), true);
+    }
+
+    private BigDecimal retrieveListPriceFrom(Element element) {
+        return retrieveListPriceFrom(element.getElementsByClass("product-price").text(), false);
+    }
+
+    private String retrieveTitleFrom(Element element) {
+        return element.getElementsByClass("product-title").text();
+    }
+
+    private String retrieveAuthorFrom(Element element) {
+        return element.getElementsByClass("product-author").text();
+    }
+
+    private List<String> findPromotionUrls() {
+        List<String> links = new ArrayList<>();
+        try {
+            final Document doc = Jsoup.connect("https://czytam.pl/promocje,1.html").get();
+            final String text = doc.getElementsByClass("show-for-medium-up")
+                    .tagName("a")
+                    .text()
+                    .split(" ")[21];
+            final int pagesCount = Integer.parseInt(text);
+            for (int i = 1; i <= pagesCount; i++) {
+                links.add("https://czytam.pl/promocje," + i + ".html");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return links;
+    }
+
+    private BigDecimal retrieveListPriceFrom(String pattern, boolean discount) {
+        String price;
+        if (pattern.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        if (discount) {
+            price = pattern.split(" ")[2];
+        } else {
+            price = pattern.split(" ")[0];
+        }
         price = price.replaceAll(",", ".");
         return BigDecimal.valueOf(Double.parseDouble(price));
     }
@@ -108,19 +133,5 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
             e.printStackTrace();
         }
         return "";
-    }
-
-    private List<String> findPromotionUrls() {
-        List<String> links = new ArrayList<>();
-        try {
-            final Document doc = Jsoup.connect("https://www.swiatksiazki.pl/swiat-niskich-cen").get();
-            final Elements elements = doc.getElementsByClass("col-sm-6 col-md-5 no-padding hidden-xs").tagName("a");
-            elements.stream()
-                    .filter(Objects::nonNull)
-                    .forEach(e -> links.add(e.getElementsByTag("a").attr("href")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return links;
     }
 }

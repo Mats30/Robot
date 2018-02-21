@@ -14,10 +14,13 @@ import static org.testng.AssertJUnit.assertEquals;
 public class SwiatKsiazkiScrapperTest {
     private final File input = new File("src/test/resources/swiatksiazki/swiatksiazki.html");
     private final SwiatKsiazkiScrapper scrapper = new SwiatKsiazkiScrapper();
+    private final List<Book> books = scrapper.scrapFromFile(input);
+
+    public SwiatKsiazkiScrapperTest() throws IOException {
+    }
 
     public void retrieveAuthor() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         String expected = "Bente Pedersen";
         //when
         String actual = books.get(0).author();
@@ -27,7 +30,6 @@ public class SwiatKsiazkiScrapperTest {
 
     public void retrieveTitle() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         String expected = "Raija. Saga ze śnieżnej krainy. Tom 22. Mężczyzna ...";
         //when
         String actual = books.get(0).title();
@@ -37,7 +39,6 @@ public class SwiatKsiazkiScrapperTest {
 
     public void retrieveDiscountPrice() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         BigDecimal expected = BigDecimal.valueOf(1.99);
         //when
         BigDecimal actual = books.get(0).discountPrice();
@@ -47,7 +48,6 @@ public class SwiatKsiazkiScrapperTest {
 
     public void retrieveListPrice() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         BigDecimal expected = BigDecimal.valueOf(9.90);
         //when
         BigDecimal actual = books.get(0).listPrice();
@@ -57,7 +57,6 @@ public class SwiatKsiazkiScrapperTest {
 
     public void retrieveBookstoreName() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         String expected = "Świat Książki";
         //when
         String actual = books.get(0).bookstore();
@@ -67,7 +66,6 @@ public class SwiatKsiazkiScrapperTest {
 
     public void retrieveIsbn() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         String expected = "9788375583946";
         //when
         String actual = books.get(0).isbn();
@@ -77,7 +75,6 @@ public class SwiatKsiazkiScrapperTest {
 
     public void retrieveUrl() throws IOException {
         //given
-        List<Book> books = scrapper.scrapFromFile(input);
         String expected = "https://www.swiatksiazki.pl/raija-saga-ze-snieznej-krainy-tom-22-mezczyzna-w-masce-1682304-ksiazka.html";
         //when
         String actual = books.get(0).url();
