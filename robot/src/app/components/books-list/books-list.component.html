@@ -1,0 +1,45 @@
+<div class="header">
+  <mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filtruj">
+  </mat-form-field>
+</div>
+
+<div class="mat-elevation-z8">
+  <mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Tytuł</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.title}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="author">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Autor/Autorzy</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.author}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bookshop">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Księgarnia</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookshop}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="promotion">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Promocja</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.promotion}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="new_price">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Nowa cena</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.new_price}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="old_price">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Stara cena</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.old_price}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+
+</div>

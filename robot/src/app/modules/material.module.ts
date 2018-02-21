@@ -1,12 +1,28 @@
-import { NgModule } from '@angular/core';
-import {MatToolbarModule} from "@angular/material";
+import {NgModule} from '@angular/core';
+import {
+  MatFormFieldModule, MatInputModule, MatPaginatorIntl, MatPaginatorModule, MatSortModule, MatTableModule,
+  MatToolbarModule
+} from "@angular/material";
+import {MatPolishPaginator} from "../components/polishPaginator";
 
 @NgModule({
   imports: [
-    MatToolbarModule
+    MatToolbarModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule
   ],
   exports: [
-    MatToolbarModule
-  ]
+    MatToolbarModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule
+  ],
+  providers: [{ provide: MatPaginatorIntl, useClass: MatPolishPaginator}]
 })
-export class MaterialModule { }
+export class MaterialModule {
+}
