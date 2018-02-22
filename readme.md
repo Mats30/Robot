@@ -52,6 +52,8 @@ We use GIT for versioning.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License - see the LICENSE file for further details.
 
 ## Acknowledgments
+
+
