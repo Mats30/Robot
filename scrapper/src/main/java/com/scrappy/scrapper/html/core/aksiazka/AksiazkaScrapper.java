@@ -14,14 +14,16 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-class AksiazkaScrapper implements HtmlScrapper {
+public class AksiazkaScrapper implements HtmlScrapper {
   
   private static final String BASE_URL = "https://aksiazka.pl/";
+  
+  private static final String DISCOUNTS_URL = "wybrane-18,promocja-na-bestsellery/";
   
   private static final String BOOKSTORE = "Księgarnia aksiazka.pl";
   
   protected Document retrievePromoBooks() throws IOException {
-    return Jsoup.connect("https://aksiazka.pl/wybrane-18,promocja-na-bestsellery/").get();
+    return Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
   }
   
   protected Document retrieveSinglePromoBook(String url) throws IOException {

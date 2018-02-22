@@ -26,6 +26,12 @@ import java.util.regex.Pattern;
  */
 public class SwiatKsiazkiScrapper implements HtmlScrapper {
     
+    private static final String BOOKSTORE = "Świat Książki";
+    
+    private static final String BASE_URL = "https://www.swiatksiazki.pl";
+    
+    private static final String DISCOUNTS_URL = "/swiat-niskich-cen";
+    
     @Override
     public List<Book> scrap() {
         List<Book> books = new ArrayList<>();
@@ -37,7 +43,7 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
                 final Elements elements = doc.getElementsByClass("product details product-item-details");
                 elements.forEach(e -> books.add(Book.builder()
                         .setAuthor(retrieveAuthorFrom(e))
-                        .setBookstore(retrieveBookstore())
+                        .setBookstore(BOOKSTORE)
                         .setDiscountPrice(retrieveDiscountPriceFrom(e))
                         .setListPrice(retrieveListPriceFrom(e))
                         .setIsbn(retrieveIsbnFrom(e))
@@ -57,7 +63,7 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
         final Elements elements = doc.getElementsByClass("product details product-item-details");
         elements.forEach(e -> books.add(Book.builder()
                 .setAuthor(retrieveAuthorFrom(e))
-                .setBookstore(retrieveBookstore())
+                .setBookstore(BOOKSTORE)
                 .setDiscountPrice(retrieveDiscountPriceFrom(e))
                 .setListPrice(retrieveListPriceFrom(e))
                 .setIsbn(retrieveIsbnFrom(e))
@@ -81,10 +87,6 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
 
     private BigDecimal retrieveListPriceFrom(Element element) {
         return retrievePriceFrom(element.getElementsByClass("old-price").text());
-    }
-
-    private String retrieveBookstore() {
-        return "Świat Książki";
     }
 
     private String retrieveIsbnFrom(Element element) {
@@ -120,8 +122,7 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     private List<String> findPromotionUrls() {
         List<String> links = new ArrayList<>();
         try {
-            final String baseUrl = "https://www.swiatksiazki.pl";
-            final Document doc = Jsoup.connect(baseUrl + "/swiat-niskich-cen").get();
+            final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
             final Elements elements = doc.getElementsByClass("col-sm-6 col-md-5 no-padding hidden-xs").tagName("a");
             elements.stream()
                     .filter(Objects::nonNull)

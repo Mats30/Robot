@@ -25,11 +25,11 @@
         <!--so maven would not fail on missing web.xml-->
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <!--DB-->
-        <postgres.version>9.1-901-1.jdbc4</postgres.version>
+        <postgres.version>42.2.1</postgres.version>
         <h2.vesrion>1.4.196</h2.vesrion>
         <hibernate.version>5.2.13.Final</hibernate.version>
         <!--Spring related -->
-        <spring.framework.version>5.0.0.RELEASE</spring.framework.version>
+        <spring.framework.version>5.0.4.RELEASE</spring.framework.version>
         <validator.version>6.0.7.Final</validator.version>
         <thymleaf.version>3.0.9.RELEASE</thymleaf.version>
         <!--Logging-->
@@ -39,7 +39,11 @@
         <testng.version>6.14.2</testng.version>
         <assertj.version>3.9.0</assertj.version>
         <mockito.version>2.15.0</mockito.version>
-        <!--Scrapping-->
+        <springdata.version>2.0.4.RELEASE</springdata.version>
+        <springdata.rest.version>3.0.4.RELEASE</springdata.rest.version>
+        <apache.commons.dbcp.version>2.0</apache.commons.dbcp.version>
+        <javax.servlet.version>4.0.0</javax.servlet.version>
+	<!--Scrapping-->
         <jsoup.version>1.11.2</jsoup.version>
         <!--Codegen-->
         <autovalue.version>1.5.3</autovalue.version>
@@ -48,6 +52,21 @@
     <dependencyManagement>
         <dependencies>
             <!--Spring related.-->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-rest-webmvc</artifactId>
+                <version>${springdata.rest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>${springdata.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
@@ -68,14 +87,27 @@
                 <artifactId>spring-security-config</artifactId>
                 <version>${spring.framework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!--Databases and hibernate related.-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${apache.commons.dbcp.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${validator.version}</version>
             </dependency>
             <dependency>
-                <groupId>postgresql</groupId>
+                <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgres.version}</version>
             </dependency>

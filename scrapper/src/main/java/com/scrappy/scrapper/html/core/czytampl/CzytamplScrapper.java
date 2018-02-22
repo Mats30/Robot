@@ -25,7 +25,9 @@ import java.util.regex.Pattern;
  */
 public class CzytamplScrapper implements HtmlScrapper {
   
-  private final static String BASE_URL = "https://czytam.pl";
+  private static final String BASE_URL = "https://czytam.pl";
+  
+  private static final String DISCOUNTS_URL = "/promocje,1.html";
   
   private static final String BOOKSTORE = "Czytam.pl";
   
@@ -38,9 +40,16 @@ public class CzytamplScrapper implements HtmlScrapper {
       try {
         final Document doc = Jsoup.connect(url).get();
         final Elements elements = doc.getElementsByClass("col-small-info");
-        elements.forEach(e -> books.add(Book.builder().setAuthor(retrieveAuthorFrom(e))
-                                            .setBookstore(BOOKSTORE).setDiscountPrice
-                                                                         (retrieveDiscountPriceFrom(e)).setListPrice(retrieveListPriceFrom(e)).setIsbn(retrieveIsbnFrom(e)).setTitle(retrieveTitleFrom(e)).setUrl(retrieveUrlFrom(e)).build()));
+        elements.forEach(e -> books
+                                  .add(Book.builder()
+                                  .setAuthor(retrieveAuthorFrom(e))
+                                  .setBookstore(BOOKSTORE)
+                                  .setDiscountPrice(retrieveDiscountPriceFrom(e))
+                                  .setListPrice(retrieveListPriceFrom(e))
+                                  .setIsbn(retrieveIsbnFrom(e))
+                                  .setTitle(retrieveTitleFrom(e))
+                                  .setUrl(retrieveUrlFrom(e))
+                                  .build()));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -84,12 +93,17 @@ public class CzytamplScrapper implements HtmlScrapper {
   private List<String> findPromotionUrls() {
     List<String> links = new ArrayList<>();
     try {
-      final Document doc = Jsoup.connect(BASE_URL + "/promocje,1.html").get();
+      final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
       final String text = doc.getElementsByClass("show-for-medium-up").tagName("a").text().split
                                                                                                (" ")[21];
       final int pagesCount = Integer.parseInt(text);
+      
+      final String discountsUrlLeft = DISCOUNTS_URL.substring(0, 10);
+      
+      final String discountsUrlRight = DISCOUNTS_URL.substring(11, 16);
+      
       for (int i = 1; i <= pagesCount; i++) {
-        links.add(BASE_URL + "/promocje," + i + ".html");
+        links.add(BASE_URL + discountsUrlLeft + i + discountsUrlRight);
       }
     } catch (IOException e) {
       e.printStackTrace();

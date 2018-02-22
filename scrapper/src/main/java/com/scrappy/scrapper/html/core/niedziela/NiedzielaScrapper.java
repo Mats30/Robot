@@ -16,14 +16,16 @@ import java.util.regex.Pattern;
 
 import static java.util.Collections.emptyList;
 
-class NiedzielaScrapper implements HtmlScrapper {
+public class NiedzielaScrapper implements HtmlScrapper {
   
   private static final String BASE_URL = "https://ksiegarnia.niedziela.pl/";
+  
+  private static final String DISCOUNTS_URL = "site/promocje/";
   
   private static final String BOOKSTORE = "Księgarnia Niedziela";
   
   protected Document retrievePromoBooks() throws IOException {
-    return Jsoup.connect("https://ksiegarnia.niedziela.pl/site/promocje/").get();
+    return Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
   }
   
   protected Document retrieveSinglePromoBook(String url) throws IOException {
@@ -46,13 +48,14 @@ class NiedzielaScrapper implements HtmlScrapper {
       final Elements elements = doc.getElementsByClass("polecamy");
       elements.forEach(e -> {
         final Book book = Book.builder()
-                        .setTitle(retrieveTitleFrom(e))
-                        .setAuthor(retrieveAuthorFrom(e))
-                        .setListPrice(retrieveListPriceFrom(e))
-                        .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                        .setBookstore(BOOKSTORE)
-                        .setUrl(retrieveUrlFrom(e))
-                        .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e))).build();
+                              .setTitle(retrieveTitleFrom(e))
+                              .setAuthor(retrieveAuthorFrom(e))
+                              .setListPrice(retrieveListPriceFrom(e))
+                              .setDiscountPrice(retrieveDiscountPriceFrom(e))
+                              .setBookstore(BOOKSTORE)
+                              .setUrl(retrieveUrlFrom(e))
+                              .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
+                              .build();
         books.add(book);
       });
       return books;
