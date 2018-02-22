@@ -38,7 +38,7 @@ public class DatabaseConfig {
     @Bean
     public DataSource createDataSource() {
         BasicDataSource source = new BasicDataSource();
-        source.setUrl("jdbc:h2:mem:");
+        source.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         source.setUsername("sa");
         source.setDriverClassName("org.h2.Driver");
         source.setInitialSize(10);
