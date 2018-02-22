@@ -1,4 +1,4 @@
-package com.scrappy.scrapper.html.swiatksiazki;
+package com.scrappy.scrapper.html.core.swiatksiazki;
 
 import com.scrappy.scrapper.common.Book;
 import org.testng.annotations.Test;

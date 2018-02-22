@@ -1,4 +1,4 @@
-package com.scrappy.scrapper.html;
+package com.scrappy.scrapper.html.api;
 
 import com.scrappy.scrapper.common.Book;
 

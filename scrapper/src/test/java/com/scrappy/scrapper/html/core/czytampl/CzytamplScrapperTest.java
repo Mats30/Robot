@@ -1,4 +1,4 @@
-package com.scrappy.scrapper.html.czytampl;
+package com.scrappy.scrapper.html.core.czytampl;
 
 import com.scrappy.scrapper.common.Book;
 import org.testng.AssertJUnit;

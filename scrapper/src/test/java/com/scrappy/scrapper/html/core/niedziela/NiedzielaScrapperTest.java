@@ -1,6 +1,7 @@
-package com.scrappy.scrapper.html;
+package com.scrappy.scrapper.html.core.niedziela;
 
 import com.scrappy.scrapper.common.Book;
+import com.scrappy.scrapper.html.api.HtmlScrapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.testng.annotations.Test;

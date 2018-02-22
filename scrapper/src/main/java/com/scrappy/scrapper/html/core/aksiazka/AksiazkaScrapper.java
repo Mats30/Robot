@@ -1,8 +1,10 @@
-package com.scrappy.scrapper.html;
+package com.scrappy.scrapper.html.core.aksiazka;
 
 import com.scrappy.scrapper.common.Book;
+import com.scrappy.scrapper.html.api.HtmlScrapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -13,6 +15,10 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 class AksiazkaScrapper implements HtmlScrapper {
+  
+  private static final String BASE_URL = "https://aksiazka.pl/";
+  
+  private static final String BOOKSTORE = "Księgarnia aksiazka.pl";
   
   protected Document retrievePromoBooks() throws IOException {
     return Jsoup.connect("https://aksiazka.pl/wybrane-18,promocja-na-bestsellery/").get();
@@ -36,16 +42,15 @@ class AksiazkaScrapper implements HtmlScrapper {
       final List<Book> books = new ArrayList<>();
       final Document doc = this.retrievePromoBooks();
       final Elements elements = doc.getElementsByClass("txtlistpoz");
-      elements.forEach(element -> {
-        String bookUrl = "https://aksiazka.pl/" + element.getElementsByTag("a").attr("href");
+      elements.forEach(e -> {
         final Book book = Book.builder()
-                              .setTitle(element.getElementsByClass("txtpronagbfullopo-tyt").text())
-                              .setAuthor(element.getElementsByClass("txtpronagbfullopo-aut").text())
-                              .setListPrice(retrievePriceFrom(element.select(".cenasmall").text()))
-                              .setDiscountPrice(retrievePriceFrom(element.select(".cenabig").text()))
-                              .setBookstore("Księgarnia aksiazka.pl")
-                              .setUrl(bookUrl)
-                              .setIsbn(retrieveIsbnFrom(bookUrl))
+                              .setTitle(retrieveTitleFrom(e))
+                              .setAuthor(retrieveAuthorFrom(e))
+                              .setListPrice(retrieveListPriceFrom(e))
+                              .setDiscountPrice(retrieveDiscountPriceFrom(e))
+                              .setBookstore(BOOKSTORE)
+                              .setUrl(retrieveUrlFrom(e))
+                              .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
                               .build();
         books.add(book);
       });
@@ -54,6 +59,26 @@ class AksiazkaScrapper implements HtmlScrapper {
       e.printStackTrace();
     }
     return emptyList();
+  }
+  
+  private String retrieveUrlFrom(Element element) {
+    return BASE_URL + element.getElementsByTag("a").attr("href");
+  }
+  
+  private BigDecimal retrieveDiscountPriceFrom(final Element element) {
+    return retrievePriceFrom(element.select(".cenabig").text());
+  }
+  
+  private BigDecimal retrieveListPriceFrom(final Element element) {
+    return retrievePriceFrom(element.select(".cenasmall").text());
+  }
+  
+  private String retrieveAuthorFrom(final Element element) {
+    return element.getElementsByClass("txtpronagbfullopo-aut").text();
+  }
+  
+  private String retrieveTitleFrom(final Element element) {
+    return element.getElementsByClass("txtpronagbfullopo-tyt").text();
   }
   
   private BigDecimal retrievePriceFrom(String pattern) {
