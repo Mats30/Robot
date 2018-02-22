@@ -1,31 +1,28 @@
 package com.scrappy.scrapper.html;
 
-import com.scrappy.scrapper.html.api.HtmlScrapper;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.scrappy.scrapper.html.core.aksiazka.AksiazkaScrapper;
 import com.scrappy.scrapper.html.core.czytampl.CzytamplScrapper;
 import com.scrappy.scrapper.html.core.niedziela.NiedzielaScrapper;
 import com.scrappy.scrapper.html.core.swiatksiazki.SwiatKsiazkiScrapper;
+import com.scrappy.scrapper.postsender.PostSender;
+import org.springframework.web.client.RestTemplate;
 
-import static java.lang.System.out;
+import java.util.concurrent.*;
 
 public class App {
-  public static void main(String[] args) {
-        
-        /*
-        Dummy use cases.
-         */
-    
-    HtmlScrapper aksiazkaScrapper = new AksiazkaScrapper();
-    out.println(aksiazkaScrapper.scrap());
-    
-    HtmlScrapper czytamplScrapper = new CzytamplScrapper();
-    out.println(czytamplScrapper.scrap());
-    
-    HtmlScrapper niedzielaScrapper = new NiedzielaScrapper();
-    out.println(niedzielaScrapper.scrap());
-    
-    HtmlScrapper swiatKsiazkiScrapper = new SwiatKsiazkiScrapper();
-    out.println(swiatKsiazkiScrapper.scrap());
-    
-  }
+    public static void main(String[] args) {
+
+        ThreadFactory scrappersThreadFactory = new ThreadFactoryBuilder()
+                .setNameFormat("Scrapper-thread-%d")
+                .build();
+
+        ScheduledExecutorService executor = Executors
+                .newScheduledThreadPool(4, scrappersThreadFactory);
+
+        executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new NiedzielaScrapper()), 0, 24, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new AksiazkaScrapper()), 0, 24, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new CzytamplScrapper()), 0, 24, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new SwiatKsiazkiScrapper()), 0, 24, TimeUnit.HOURS);
+    }
 }

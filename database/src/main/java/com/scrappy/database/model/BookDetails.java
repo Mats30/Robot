@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 @Entity
 public class BookDetails {
+    /**
+     * DO NOT IMPLEMENT .toString() METHOD IN THIS CLASS! IT WILL CAUSE CYCLIC DEPENDENCY AND STACK OVERFLOW ERROR!
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

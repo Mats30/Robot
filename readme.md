@@ -1,6 +1,6 @@
 # SCRAPPY - The brave Web Scraper
 
-The aim of this project is to provide a tool that on a regular basis collects data on discount books 
+The aim of this project is to provide a tool that on a regular basis collects data on discount scrappedBooks 
 from several bookshops. The application will gather and save the relevant data in a relational database
 and expose it via REST endpoints. The front-end part will be produced with Angular.
 

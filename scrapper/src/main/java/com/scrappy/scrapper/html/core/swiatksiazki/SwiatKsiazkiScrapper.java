@@ -1,7 +1,8 @@
 package com.scrappy.scrapper.html.core.swiatksiazki;
 
-import com.scrappy.scrapper.common.Book;
+import com.scrappy.scrapper.common.ScrappedBook;
 import com.scrappy.scrapper.html.api.HtmlScrapper;
+import com.scrappy.scrapper.html.model.BookStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,20 +26,20 @@ import java.util.regex.Pattern;
  * @since 2018-02-21
  */
 public class SwiatKsiazkiScrapper implements HtmlScrapper {
-    
+
     private static final String BOOKSTORE = "Świat Książki";
-    
+
     private static final String BASE_URL = "https://www.swiatksiazki.pl";
-    
+
     private static final String DISCOUNTS_URL = "/swiat-niskich-cen";
-    
+
     private static final String ISBN_REGEX = "\\d{13}";
-    
+
     private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
-    
+
     @Override
-    public List<Book> scrap() {
-        List<Book> books = new ArrayList<>();
+    public List<ScrappedBook> scrap() {
+        List<ScrappedBook> scrappedBooks = new ArrayList<>();
         List<String> urlsToScrap = findPromotionUrls();
 
         urlsToScrap.forEach(url -> {
@@ -46,9 +47,9 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
                 final Document doc = Jsoup.connect(url).get();
                 final String booksContainer = "product details product-item-details";
                 final Elements elements = doc.getElementsByClass(booksContainer);
-                elements.forEach(e -> books.add(Book.builder()
+                elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
                         .setAuthor(retrieveAuthorFrom(e))
-                        .setBookstore(BOOKSTORE)
+                        .setBookstore(BookStore.SWIAT_KSIAZKI)
                         .setDiscountPrice(retrieveDiscountPriceFrom(e))
                         .setListPrice(retrieveListPriceFrom(e))
                         .setIsbn(retrieveIsbnFrom(e))
@@ -59,24 +60,24 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
                 e.printStackTrace();
             }
         });
-        return books;
+        return scrappedBooks;
     }
 
-    List<Book> scrapFromFile(File file) throws IOException {
-        List<Book> books = new ArrayList<>();
+    List<ScrappedBook> scrapFromFile(File file) throws IOException {
+        List<ScrappedBook> scrappedBooks = new ArrayList<>();
         final Document doc = Jsoup.parse(file, "UTF-8", "");
         final String booksContainer = "product details product-item-details";
         final Elements elements = doc.getElementsByClass(booksContainer);
-        elements.forEach(e -> books.add(Book.builder()
+        elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
                 .setAuthor(retrieveAuthorFrom(e))
-                .setBookstore(BOOKSTORE)
+                .setBookstore(BookStore.SWIAT_KSIAZKI)
                 .setDiscountPrice(retrieveDiscountPriceFrom(e))
                 .setListPrice(retrieveListPriceFrom(e))
                 .setIsbn(retrieveIsbnFrom(e))
                 .setTitle(retrieveTitleFrom(e))
                 .setUrl(retrieveUrlFrom(e))
                 .build()));
-        return books;
+        return scrappedBooks;
     }
 
     private String retrieveAuthorFrom(Element element) {

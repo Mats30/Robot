@@ -1,13 +1,12 @@
 package com.scrappy.database.controllers;
 
 import com.scrappy.database.dto.BookDTO;
+import com.scrappy.database.model.Book;
+import com.scrappy.database.model.BookDetails;
 import com.scrappy.database.services.BookService;
 import com.scrappy.database.services.BookServiceQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,8 +26,20 @@ public class BookController {
         return service.test();
     }
 
+    @GetMapping("/all")
+    public List<BookDTO> getBooks() {
+        return service.findAll();
+    }
+
     @GetMapping("/byTitle")
     public List<BookDTO> getBooksByTitle(@RequestParam String title) {
         return service.findByTitle(title);
+    }
+
+    @PostMapping(path = "/save", consumes = "application/json", produces = "application/json")
+    public void save(@RequestBody Book book) {
+        book.setBookDetails(book.getBookDetails());
+        book.getBookDetails().setBook(book);
+        service.save(book);
     }
 }
