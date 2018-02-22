@@ -1,62 +1,26 @@
 import {Injectable} from '@angular/core';
-import {UtilityService} from "./utility.service";
-import {Book} from "../entities/book";
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from "rxjs/Observable";
+import {BooksApi} from "../entities/booksApi";
 
 @Injectable()
 export class BookService {
-  data: Array<Book>;
+  private host: string = "http://localhost:8080/database-1.0-SNAPSHOT/books";
 
-  constructor(private utilityService: UtilityService) {
-    this.data = [];
+  constructor(private http: HttpClient) {
   }
 
-  public getBooksList() {
-    /*
-    Dummy objects inserted to data source to test sorting and filtering functionalities
-     */
-    let potop: Book = {
-      title: "Potop",
-      author: "Sienkiewicz",
-      bookshop: "Bonito",
-      category: "powieść",
-      new_price: 49.99,
-      old_price: 69.99,
-      url : "https://bonito.pl/k-1316948-potop"
-    };
+  public getBooksList(url: string): Observable<BooksApi> {
+    return this.http.get<BooksApi>(this.host + url);
+  }
 
-    let potop2: Book = {
-      title: "Potop",
-      author: "Sienkiewicz",
-      bookshop: "Helion",
-      category: "powieść",
-      new_price: 46.99,
-      old_price: 74.99,
-      url : "https://bonito.pl/k-1316948-potop"
-    };
+  public getPagedBooksList(sort: string, order: string, page: number, numberInPage: number): Observable<BooksApi> {
+    const requestUrlParams =
+      `?sort=${sort}&order=${order}&page=${page + 1}&num=${numberInPage}`;
 
-    let witcher: Book = {
-      title: "Wiedźmin",
-      author: "Sapkowski",
-      bookshop: "Bonito",
-      category: "fantastyka",
-      new_price: 29.99,
-      old_price: 49.99,
-      url : "https://bonito.pl/k-1316948-potop"
-    };
-
-    let java: Book = {
-      title: "Effective Java",
-      author: "Joshua Bloch",
-      bookshop: "Helion",
-      category: "techniczne",
-      new_price: 109.99,
-      old_price: 149.99,
-      url : "https://bonito.pl/k-1316948-potop"
-    };
-    this.data.push(potop);
-    this.data.push(potop2);
-    this.data.push(witcher);
-    this.data.push(java);
+    return this.http.get<BooksApi>(this.host + "/test" + requestUrlParams);
   }
 
 }
+
+

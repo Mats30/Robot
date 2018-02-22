@@ -1,35 +1,55 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
-import {Book} from "../../entities/book";
 import {BookService} from "../../services/book.service";
+import {merge} from 'rxjs/observable/merge';
+import {of as observableOf} from 'rxjs/observable/of';
+import {catchError} from 'rxjs/operators/catchError';
+import {map} from 'rxjs/operators/map';
+import {startWith} from 'rxjs/operators/startWith';
+import {switchMap} from 'rxjs/operators/switchMap';
+
+
 
 @Component({
   selector: 'app-books-list',
   templateUrl: './books-list.component.html',
   styleUrls: ['./books-list.component.css']
 })
-export class BooksListComponent {
+export class BooksListComponent implements OnInit{
+  displayedColumns = ['title', 'author', 'bookStore', 'genre', 'promoPrice', "basePrice"];
+  dataSource;
 
-  displayedColumns = ['title', 'author', 'bookshop', 'category', 'new_price', "old_price", "url"];
-  dataSource: MatTableDataSource<Book>;
+  isLoadingResults = true;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private bookService: BookService) {
-    this.bookService.getBooksList();
-    this.dataSource = new MatTableDataSource(bookService.data);
+  constructor(public bookService: BookService) {
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
+  ngOnInit() {
+    this.dataSource = new MatTableDataSource();
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim();
-    filterValue = filterValue.toLowerCase();
-    this.dataSource.filter = filterValue;
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          return this.bookService!.getPagedBooksList(
+            this.sort.active,
+            this.sort.direction,
+            this.paginator.pageIndex,
+            this.paginator.pageSize);
+        }),
+        map(data => {
+          this.isLoadingResults = false;
+          return data;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          return observableOf([]);
+        })
+      ).subscribe(data => this.dataSource.data = data);
   }
-
 }
