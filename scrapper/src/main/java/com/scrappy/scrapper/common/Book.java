@@ -6,14 +6,14 @@ import java.math.BigDecimal;
 
 @AutoValue
 abstract public class Book {
-  abstract public String title();
-  abstract String author();
-  abstract BigDecimal discountPrice();
-  abstract BigDecimal listPrice();
-  abstract String bookstore();
-  abstract String isbn();
-  abstract String url();
-  
+  public abstract String title();
+  public abstract String author();
+  public abstract BigDecimal discountPrice();
+  public abstract BigDecimal listPrice();
+  public abstract String bookstore();
+  public abstract String isbn();
+  public abstract String url();
+
   public static Builder builder() {
     return new AutoValue_Book.Builder();
   }
@@ -29,4 +29,5 @@ abstract public class Book {
     abstract public Builder setUrl(String url);
     abstract public Book build();
   }
+
 }
