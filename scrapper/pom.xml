@@ -10,8 +10,7 @@
     <name>scrapper</name>
 
     <description>
-        - HTML parser and scrapper.
-        - REST crawler.
+        HTML scrapper.
     </description>
 
     <parent>
