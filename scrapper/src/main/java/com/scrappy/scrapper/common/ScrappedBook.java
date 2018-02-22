@@ -1,11 +1,12 @@
 package com.scrappy.scrapper.common;
 
 import com.google.auto.value.AutoValue;
+import com.scrappy.scrapper.html.model.BookStore;
 
 import java.math.BigDecimal;
 
 @AutoValue
-abstract public class Book {
+abstract public class ScrappedBook {
   public abstract String title();
   
   public abstract String author();
@@ -14,14 +15,14 @@ abstract public class Book {
   
   public abstract BigDecimal listPrice();
   
-  public abstract String bookstore();
+  public abstract BookStore bookstore();
   
   public abstract String isbn();
   
   public abstract String url();
   
   public static Builder builder() {
-    return new AutoValue_Book.Builder();
+    return new AutoValue_ScrappedBook.Builder();
   }
   
   @AutoValue.Builder
@@ -34,13 +35,13 @@ abstract public class Book {
     
     abstract public Builder setListPrice(BigDecimal listPrice);
     
-    abstract public Builder setBookstore(String bookstore);
+    abstract public Builder setBookstore(BookStore bookstore);
     
     abstract public Builder setIsbn(String isbn);
     
     abstract public Builder setUrl(String url);
     
-    abstract public Book build();
+    abstract public ScrappedBook build();
   }
   
 }

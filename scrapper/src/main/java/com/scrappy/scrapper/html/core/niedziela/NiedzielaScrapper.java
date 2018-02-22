@@ -1,7 +1,8 @@
 package com.scrappy.scrapper.html.core.niedziela;
 
-import com.scrappy.scrapper.common.Book;
+import com.scrappy.scrapper.common.ScrappedBook;
 import com.scrappy.scrapper.html.api.HtmlScrapper;
+import com.scrappy.scrapper.html.model.BookStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,25 +38,25 @@ public class NiedzielaScrapper implements HtmlScrapper {
    * @return list of discounted books.
    */
   @Override
-  public List<Book> scrap() {
+  public List<ScrappedBook> scrap() {
     try {
-      final List<Book> books = new ArrayList<>();
+      final List<ScrappedBook> scrappedBooks = new ArrayList<>();
       final Document doc = this.retrievePromoBooks();
       final String booksContainer = "polecamy";
       final Elements elements = doc.getElementsByClass(booksContainer);
       elements.forEach(e -> {
-        final Book book = Book.builder()
+        final ScrappedBook scrappedBook = ScrappedBook.builder()
                               .setTitle(retrieveTitleFrom(e))
                               .setAuthor(retrieveAuthorFrom(e))
                               .setListPrice(retrieveListPriceFrom(e))
                               .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                              .setBookstore(BOOKSTORE)
+                              .setBookstore(BookStore.NIEDZIELA)
                               .setUrl(retrieveUrlFrom(e))
                               .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
                               .build();
-        books.add(book);
+        scrappedBooks.add(scrappedBook);
       });
-      return books;
+      return scrappedBooks;
     } catch (IOException e) {
       e.printStackTrace();
     }

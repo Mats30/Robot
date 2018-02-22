@@ -1,26 +1,19 @@
-package com.scrappy.database.model;
+package com.scrappy.scrapper.html.model;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@Entity
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
+@JsonSerialize
 public class Book {
-    /**
-     * DO NOT IMPLEMENT .toString() METHOD IN THIS CLASS! IT WILL CAUSE CYCLIC DEPENDENCY AND STACK OVERFLOW ERROR!
-     */
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
 
     private String title;
 
-    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
     private BookDetails bookDetails;
 
     private String author;
 
-    @Enumerated
     private BookStore bookStore;
 
     public Book() {
@@ -30,6 +23,15 @@ public class Book {
         this.title = title;
     }
 
+    @Override
+    public String toString() {
+        return "ScrappedBook{" +
+                "title='" + title + '\'' +
+                ", bookDetails=" + bookDetails.toString() +
+                ", author='" + author + '\'' +
+                ", bookStore=" + bookStore +
+                '}';
+    }
 
     public String getAuthor() {
         return author;
@@ -53,6 +55,10 @@ public class Book {
 
     public void setBookDetails(BookDetails bookDetails) {
         this.bookDetails = bookDetails;
+    }
+
+    public void setBookStore(BookStore bookStore) {
+        this.bookStore = bookStore;
     }
 
     public BookStore getBookStore() {

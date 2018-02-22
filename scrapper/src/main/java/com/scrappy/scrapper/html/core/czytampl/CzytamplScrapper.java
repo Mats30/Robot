@@ -1,7 +1,8 @@
 package com.scrappy.scrapper.html.core.czytampl;
 
-import com.scrappy.scrapper.common.Book;
+import com.scrappy.scrapper.common.ScrappedBook;
 import com.scrappy.scrapper.html.api.HtmlScrapper;
+import com.scrappy.scrapper.html.model.BookStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,8 +37,8 @@ public class CzytamplScrapper implements HtmlScrapper {
   private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
   
   @Override
-  public List<Book> scrap() {
-    List<Book> books = new ArrayList<>();
+  public List<ScrappedBook> scrap() {
+    List<ScrappedBook> scrappedBooks = new ArrayList<>();
     List<String> urlsToScrap = findPromotionUrls();
     
     urlsToScrap.forEach(url -> {
@@ -45,10 +46,10 @@ public class CzytamplScrapper implements HtmlScrapper {
         final Document doc = Jsoup.connect(url).get();
         final String booksContainer = "col-small-info";
         final Elements elements = doc.getElementsByClass(booksContainer);
-        elements.forEach(e -> books
-                                  .add(Book.builder()
+        elements.forEach(e -> scrappedBooks
+                                  .add(ScrappedBook.builder()
                                   .setAuthor(retrieveAuthorFrom(e))
-                                  .setBookstore(BOOKSTORE)
+                                  .setBookstore(BookStore.CZYTAM)
                                   .setDiscountPrice(retrieveDiscountPriceFrom(e))
                                   .setListPrice(retrieveListPriceFrom(e))
                                   .setIsbn(retrieveIsbnFrom(e))
@@ -59,23 +60,23 @@ public class CzytamplScrapper implements HtmlScrapper {
         e.printStackTrace();
       }
     });
-    return books;
+    return scrappedBooks;
   }
   
-  List<Book> scrapFromFile(File file) throws IOException {
-    List<Book> books = new ArrayList<>();
+  List<ScrappedBook> scrapFromFile(File file) throws IOException {
+    List<ScrappedBook> scrappedBooks = new ArrayList<>();
     final Document doc = Jsoup.parse(file, "UTF-8", "");
     final Elements elements = doc.getElementsByClass("col-small-info");
-    elements.forEach(e -> books.add(Book.builder()
+    elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
                                         .setAuthor(retrieveAuthorFrom(e))
                                         .setTitle(retrieveTitleFrom(e))
                                         .setListPrice(retrieveListPriceFrom(e))
                                         .setDiscountPrice(retrieveDiscountPriceFrom(e))
                                         .setUrl(retrieveUrlFrom(e))
                                         .setIsbn(retrieveIsbnFrom(e))
-                                        .setBookstore(BOOKSTORE)
+                                        .setBookstore(BookStore.CZYTAM)
                                         .build()));
-    return books;
+    return scrappedBooks;
   }
   
   private String retrieveIsbnFrom(Element element) {
