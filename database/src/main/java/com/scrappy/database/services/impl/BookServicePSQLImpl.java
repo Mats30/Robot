@@ -9,6 +9,9 @@ import com.scrappy.database.repositories.BookRepository;
 import com.scrappy.database.services.BookService;
 import com.scrappy.database.services.BookServiceQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -27,8 +30,11 @@ public class BookServicePSQLImpl implements BookService {
     }
 
     @Override
-    public List<BookDTO> findAll() {
-        return BookConverter.convert(repository.findAll());
+    public Page<BookDTO> findAll(Pageable pageable) {
+
+      Page<BookDTO> pages = new PageImpl<>(BookConverter.convert(repository.findAll()));
+
+        return pages;
     }
 
     @Override

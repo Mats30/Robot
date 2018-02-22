@@ -2,6 +2,7 @@ package com.scrappy.database.converters;
 
 import com.scrappy.database.dto.BookDTO;
 import com.scrappy.database.model.Book;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ public class BookConverter {
     }
 
     public static List<BookDTO> convert(List<Book> bookDetails) {
+
         return bookDetails.stream().map(BookConverter::convert).collect(Collectors.toList());
     }
 }

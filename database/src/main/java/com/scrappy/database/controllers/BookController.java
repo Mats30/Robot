@@ -6,12 +6,16 @@ import com.scrappy.database.model.BookDetails;
 import com.scrappy.database.services.BookService;
 import com.scrappy.database.services.BookServiceQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/books")
+@CrossOrigin(origins = "http://localhost:4200")
 public class BookController {
     private BookService service;
 
@@ -27,8 +31,8 @@ public class BookController {
     }
 
     @GetMapping("/all")
-    public List<BookDTO> getBooks() {
-        return service.findAll();
+    public Page<BookDTO> getBooks(Pageable pageable) {
+        return service.findAll(pageable);
     }
 
     @GetMapping("/byTitle")
