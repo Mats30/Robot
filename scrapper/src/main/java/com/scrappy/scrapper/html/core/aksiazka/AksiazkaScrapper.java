@@ -43,7 +43,8 @@ public class AksiazkaScrapper implements HtmlScrapper {
     try {
       final List<Book> books = new ArrayList<>();
       final Document doc = this.retrievePromoBooks();
-      final Elements elements = doc.getElementsByClass("txtlistpoz");
+      final String booksContainer = "txtlistpoz";
+      final Elements elements = doc.getElementsByClass(booksContainer);
       elements.forEach(e -> {
         final Book book = Book.builder()
                               .setTitle(retrieveTitleFrom(e))
@@ -68,19 +69,23 @@ public class AksiazkaScrapper implements HtmlScrapper {
   }
   
   private BigDecimal retrieveDiscountPriceFrom(final Element element) {
-    return retrievePriceFrom(element.select(".cenabig").text());
+    final String discountPriceContainer = ".cenabig";
+    return retrievePriceFrom(element.select(discountPriceContainer).text());
   }
   
   private BigDecimal retrieveListPriceFrom(final Element element) {
-    return retrievePriceFrom(element.select(".cenasmall").text());
+    final String listPriceContainer = ".cenasmall";
+    return retrievePriceFrom(element.select(listPriceContainer).text());
   }
   
   private String retrieveAuthorFrom(final Element element) {
-    return element.getElementsByClass("txtpronagbfullopo-aut").text();
+    final String authorContainer = "txtpronagbfullopo-aut";
+    return element.getElementsByClass(authorContainer).text();
   }
   
   private String retrieveTitleFrom(final Element element) {
-    return element.getElementsByClass("txtpronagbfullopo-tyt").text();
+    final String titleContainer = "txtpronagbfullopo-tyt";
+    return element.getElementsByClass(titleContainer).text();
   }
   
   private BigDecimal retrievePriceFrom(String pattern) {
@@ -91,9 +96,11 @@ public class AksiazkaScrapper implements HtmlScrapper {
   private String retrieveIsbnFrom(String url) {
     try {
       final Document doc = this.retrieveSinglePromoBook(url);
-      final Elements product = doc.getElementsByClass("txttresc");
+      final String isbnOuterContainer = "txttresc";
+      final Elements product = doc.getElementsByClass(isbnOuterContainer);
       final Elements isbn = product.select("div:containsOwn(isbn)");
-      return isbn.select(".boldi").text();
+      final String isbnInnerContainer = ".boldi";
+      return isbn.select(isbnInnerContainer).text();
     } catch (IOException e) {
       e.printStackTrace();
     }

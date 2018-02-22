@@ -32,6 +32,10 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     
     private static final String DISCOUNTS_URL = "/swiat-niskich-cen";
     
+    private static final String ISBN_REGEX = "\\d{13}";
+    
+    private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
+    
     @Override
     public List<Book> scrap() {
         List<Book> books = new ArrayList<>();
@@ -40,7 +44,8 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
         urlsToScrap.forEach(url -> {
             try {
                 final Document doc = Jsoup.connect(url).get();
-                final Elements elements = doc.getElementsByClass("product details product-item-details");
+                final String booksContainer = "product details product-item-details";
+                final Elements elements = doc.getElementsByClass(booksContainer);
                 elements.forEach(e -> books.add(Book.builder()
                         .setAuthor(retrieveAuthorFrom(e))
                         .setBookstore(BOOKSTORE)
@@ -60,7 +65,8 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     List<Book> scrapFromFile(File file) throws IOException {
         List<Book> books = new ArrayList<>();
         final Document doc = Jsoup.parse(file, "UTF-8", "");
-        final Elements elements = doc.getElementsByClass("product details product-item-details");
+        final String booksContainer = "product details product-item-details";
+        final Elements elements = doc.getElementsByClass(booksContainer);
         elements.forEach(e -> books.add(Book.builder()
                 .setAuthor(retrieveAuthorFrom(e))
                 .setBookstore(BOOKSTORE)
@@ -74,27 +80,33 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     }
 
     private String retrieveAuthorFrom(Element element) {
-        return element.getElementsByClass("product author product-item-author").text();
+        final String authorContainer = "product author product-item-author";
+        return element.getElementsByClass(authorContainer).text();
     }
 
     private String retrieveTitleFrom(Element element) {
-        return element.getElementsByClass("product name product-item-name").text();
+        final String titleContainer = "product name product-item-name";
+        return element.getElementsByClass(titleContainer).text();
     }
 
     private BigDecimal retrieveDiscountPriceFrom(Element element) {
-        return retrievePriceFrom(element.getElementsByClass("special-price").text());
+        final String discountPriceContainer = "special-price";
+        return retrievePriceFrom(element.getElementsByClass(discountPriceContainer).text());
     }
 
     private BigDecimal retrieveListPriceFrom(Element element) {
-        return retrievePriceFrom(element.getElementsByClass("old-price").text());
+        final String listPriceContainer = "old-price";
+        return retrievePriceFrom(element.getElementsByClass(listPriceContainer).text());
     }
 
     private String retrieveIsbnFrom(Element element) {
-        return retrieveIsbnFrom(element.getElementsByClass("product-item-link").attr("href"));
+        final String isbnContainer = "product-item-link";
+        return retrieveIsbnFrom(element.getElementsByClass(isbnContainer).attr("href"));
     }
 
     private String retrieveUrlFrom(Element element) {
-        return element.getElementsByClass("product-item-link").attr("href");
+        final String urlContainer = "product-item-link";
+        return element.getElementsByClass(urlContainer).attr("href");
     }
 
     private BigDecimal retrievePriceFrom(String pattern) {
@@ -106,11 +118,9 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     private String retrieveIsbnFrom(String url) {
         try {
             final Document doc = Jsoup.connect(url).get();
-            final String regex = "\\d{13}";
-            final Elements elements = doc.getElementsMatchingOwnText(regex);
+            final Elements elements = doc.getElementsMatchingOwnText(ISBN_REGEX);
             String result = elements.get(0).toString();
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(result);
+            Matcher matcher = ISBN_PATTERN.matcher(result);
             matcher.find();
             return matcher.group();
         } catch (IOException e) {
@@ -123,7 +133,8 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
         List<String> links = new ArrayList<>();
         try {
             final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
-            final Elements elements = doc.getElementsByClass("col-sm-6 col-md-5 no-padding hidden-xs").tagName("a");
+            final String promotionUrlsContainer = "col-sm-6 col-md-5 no-padding hidden-xs";
+            final Elements elements = doc.getElementsByClass(promotionUrlsContainer).tagName("a");
             elements.stream()
                     .filter(Objects::nonNull)
                     .forEach(e -> links.add(e.getElementsByTag("a").attr("href")));

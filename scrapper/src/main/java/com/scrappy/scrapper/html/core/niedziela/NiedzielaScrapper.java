@@ -24,13 +24,9 @@ public class NiedzielaScrapper implements HtmlScrapper {
   
   private static final String BOOKSTORE = "Księgarnia Niedziela";
   
-  protected Document retrievePromoBooks() throws IOException {
-    return Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
-  }
+  private static final String ISBN_REGEX = "\\d*-\\d*-\\d*-\\d*";
   
-  protected Document retrieveSinglePromoBook(String url) throws IOException {
-    return Jsoup.connect(url).get();
-  }
+  private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
   
   /**
    * Iterates through a container on a single page with discounted books
@@ -45,7 +41,8 @@ public class NiedzielaScrapper implements HtmlScrapper {
     try {
       final List<Book> books = new ArrayList<>();
       final Document doc = this.retrievePromoBooks();
-      final Elements elements = doc.getElementsByClass("polecamy");
+      final String booksContainer = "polecamy";
+      final Elements elements = doc.getElementsByClass(booksContainer);
       elements.forEach(e -> {
         final Book book = Book.builder()
                               .setTitle(retrieveTitleFrom(e))
@@ -65,22 +62,30 @@ public class NiedzielaScrapper implements HtmlScrapper {
     return emptyList();
   }
   
+  protected Document retrievePromoBooks() throws IOException {
+    return Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
+  }
+  
+  protected Document retrieveSinglePromoBook(String url) throws IOException {
+    return Jsoup.connect(url).get();
+  }
+  
   private String retrieveAuthorFrom(final Element element) {
-    return element.getElementsByClass("polecamy_dzial").text();
+    final String authorContainer = "polecamy_dzial";
+    return element.getElementsByClass(authorContainer).text();
   }
   
   private String retrieveTitleFrom(final Element element) {
-    return element.getElementsByClass("polecamy_tytul").text();
+    final String titleContainer = "polecamy_tytul";
+    return element.getElementsByClass(titleContainer).text();
   }
   
   private String retrieveIsbnFrom(String url) {
     try {
       final Document doc = this.retrieveSinglePromoBook(url);
-      final String regex = "\\d*-\\d*-\\d*-\\d*";
-      final Elements elements = doc.getElementsMatchingOwnText(regex);
+      final Elements elements = doc.getElementsMatchingOwnText(ISBN_REGEX);
       final String result = elements.first().toString();
-      final Pattern pattern = Pattern.compile(regex);
-      final Matcher matcher = pattern.matcher(result);
+      final Matcher matcher = ISBN_PATTERN.matcher(result);
       matcher.find();
       return matcher.group();
     } catch (IOException e) {
@@ -94,12 +99,14 @@ public class NiedzielaScrapper implements HtmlScrapper {
   }
   
   private BigDecimal retrieveListPriceFrom(Element element) {
-    String pattern = element.getElementsByTag("strike").text();
+    final String listPriceContainer = "strike";
+    String pattern = element.getElementsByTag(listPriceContainer).text();
     return retrievePriceFrom(pattern);
   }
   
   private BigDecimal retrieveDiscountPriceFrom(Element element) {
-    String pattern = element.getElementsByClass("polecamy_cena").tagName("span").get(0).text();
+    final String discountPriceContainer = "polecamy_cena";
+    String pattern = element.getElementsByClass(discountPriceContainer).tagName("span").get(0).text();
     return retrievePriceFrom(pattern);
   }
   

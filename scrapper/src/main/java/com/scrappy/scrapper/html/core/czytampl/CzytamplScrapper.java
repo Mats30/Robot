@@ -31,6 +31,10 @@ public class CzytamplScrapper implements HtmlScrapper {
   
   private static final String BOOKSTORE = "Czytam.pl";
   
+  private static final String ISBN_REGEX = "\\d{13}";
+  
+  private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
+  
   @Override
   public List<Book> scrap() {
     List<Book> books = new ArrayList<>();
@@ -39,7 +43,8 @@ public class CzytamplScrapper implements HtmlScrapper {
     urlsToScrap.forEach(url -> {
       try {
         final Document doc = Jsoup.connect(url).get();
-        final Elements elements = doc.getElementsByClass("col-small-info");
+        final String booksContainer = "col-small-info";
+        final Elements elements = doc.getElementsByClass(booksContainer);
         elements.forEach(e -> books
                                   .add(Book.builder()
                                   .setAuthor(retrieveAuthorFrom(e))
@@ -61,8 +66,15 @@ public class CzytamplScrapper implements HtmlScrapper {
     List<Book> books = new ArrayList<>();
     final Document doc = Jsoup.parse(file, "UTF-8", "");
     final Elements elements = doc.getElementsByClass("col-small-info");
-    elements.forEach(e -> books.add(Book.builder().setAuthor(retrieveAuthorFrom(e)).setTitle
-                                                                                        (retrieveTitleFrom(e)).setListPrice(retrieveListPriceFrom(e)).setDiscountPrice(retrieveDiscountPriceFrom(e)).setUrl(retrieveUrlFrom(e)).setIsbn(retrieveIsbnFrom(e)).setBookstore(BOOKSTORE).build()));
+    elements.forEach(e -> books.add(Book.builder()
+                                        .setAuthor(retrieveAuthorFrom(e))
+                                        .setTitle(retrieveTitleFrom(e))
+                                        .setListPrice(retrieveListPriceFrom(e))
+                                        .setDiscountPrice(retrieveDiscountPriceFrom(e))
+                                        .setUrl(retrieveUrlFrom(e))
+                                        .setIsbn(retrieveIsbnFrom(e))
+                                        .setBookstore(BOOKSTORE)
+                                        .build()));
     return books;
   }
   
@@ -75,33 +87,34 @@ public class CzytamplScrapper implements HtmlScrapper {
   }
   
   private BigDecimal retrieveDiscountPriceFrom(Element element) {
-    return retrieveListPriceFrom(element.getElementsByClass("product-price").text(), true);
+    final String discountPriceContainer = "product-price";
+    return retrieveListPriceFrom(element.getElementsByClass(discountPriceContainer).text(), true);
   }
   
   private BigDecimal retrieveListPriceFrom(Element element) {
-    return retrieveListPriceFrom(element.getElementsByClass("product-price").text(), false);
+    final String listPriceContainer = "product-price";
+    return retrieveListPriceFrom(element.getElementsByClass(listPriceContainer).text(), false);
   }
   
   private String retrieveTitleFrom(Element element) {
-    return element.getElementsByClass("product-title").text();
+    final String titleContainer = "product-title";
+    return element.getElementsByClass(titleContainer).text();
   }
   
   private String retrieveAuthorFrom(Element element) {
-    return element.getElementsByClass("product-author").text();
+    final String authorContainer = "product-author";
+    return element.getElementsByClass(authorContainer).text();
   }
   
   private List<String> findPromotionUrls() {
     List<String> links = new ArrayList<>();
     try {
       final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
-      final String text = doc.getElementsByClass("show-for-medium-up").tagName("a").text().split
-                                                                                               (" ")[21];
+      final String latestPageNumberContainer = "show-for-medium-up";
+      final String text = doc.getElementsByClass(latestPageNumberContainer).tagName("a").text().split (" ")[21];
       final int pagesCount = Integer.parseInt(text);
-      
       final String discountsUrlLeft = DISCOUNTS_URL.substring(0, 10);
-      
       final String discountsUrlRight = DISCOUNTS_URL.substring(11, 16);
-      
       for (int i = 1; i <= pagesCount; i++) {
         links.add(BASE_URL + discountsUrlLeft + i + discountsUrlRight);
       }
@@ -127,11 +140,9 @@ public class CzytamplScrapper implements HtmlScrapper {
   private String retrieveIsbnFrom(String url) {
     try {
       final Document doc = Jsoup.connect(url).get();
-      final String regex = "\\d{13}";
-      final Elements elements = doc.getElementsMatchingOwnText(regex);
+      final Elements elements = doc.getElementsMatchingOwnText(ISBN_REGEX);
       String result = elements.get(0).toString();
-      Pattern pattern = Pattern.compile(regex);
-      Matcher matcher = pattern.matcher(result);
+      Matcher matcher = ISBN_PATTERN.matcher(result);
       matcher.find();
       return matcher.group();
     } catch (IOException e) {
