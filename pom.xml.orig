@@ -43,10 +43,15 @@
         <springdata.rest.version>3.0.4.RELEASE</springdata.rest.version>
         <apache.commons.dbcp.version>2.0</apache.commons.dbcp.version>
         <javax.servlet.version>4.0.0</javax.servlet.version>
+<<<<<<< HEAD
 	<!--Scrapping-->
         <jsoup.version>1.11.2</jsoup.version>
         <!--Codegen-->
         <autovalue.version>1.5.3</autovalue.version>
+=======
+
+
+>>>>>>> development
     </properties>
 
     <dependencyManagement>
@@ -150,6 +155,19 @@
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <!--Scrapping-->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+            <!--Codegen-->
+            <dependency>
+                <groupId>com.google.auto.value</groupId>
+                <artifactId>auto-value</artifactId>
+                <version>${autovalue.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
