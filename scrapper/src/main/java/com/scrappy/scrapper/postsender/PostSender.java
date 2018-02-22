@@ -22,7 +22,7 @@ public class PostSender {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<com.scrappy.scrapper.html.model.Book> entity = new HttpEntity<>(book, headers);
             System.out.println("GDZIE JEST KURWA LOGGER!!!" + book);
-            template.exchange("http://localhost:8080/database-1.0-SNAPSHOT/books/save", HttpMethod.POST, entity, String.class);
+            template.exchange("http://localhost:8080/books/save", HttpMethod.POST, entity, String.class);
         });
     }
 }
