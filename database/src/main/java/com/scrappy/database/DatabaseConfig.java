@@ -17,6 +17,14 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * It configures the database access.
+ *
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-20
+ */
+
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories

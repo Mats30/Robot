@@ -2,12 +2,16 @@ package com.scrappy.database.model;
 
 import javax.persistence.*;
 
-@Entity
 
+/**
+ * Represents the Book entity so as to persist it in the database.
+ *
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-20
+ */
+
+@Entity
 public class Book {
-    /**
-     * DO NOT IMPLEMENT .toString() METHOD IN THIS CLASS! IT WILL CAUSE CYCLIC DEPENDENCY AND STACK OVERFLOW ERROR!
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -10,6 +10,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.*;
 
+/**
+ * It launches the scrapers.
+ *
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-20
+ */
+
 public class App {
     public static void main(String[] args) {
 

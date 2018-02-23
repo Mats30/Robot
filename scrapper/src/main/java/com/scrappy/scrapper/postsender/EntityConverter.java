@@ -4,8 +4,15 @@ import com.scrappy.scrapper.common.ScrappedBook;
 import com.scrappy.scrapper.html.model.Book;
 import com.scrappy.scrapper.html.model.BookDetails;
 
-public class UglyAsFuckConverterToRefactorLater {
-    public Book convertAsUglyAsYouCan(ScrappedBook scrappedBook) {
+/**
+ * It converts the data on scrapped books to entities tha can be saved in the database.
+ *
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-20
+ */
+
+public class EntityConverter {
+    public Book convertScrappedToEntity(ScrappedBook scrappedBook) {
         Book temp = new Book();
         new com.scrappy.scrapper.html.model.Book();
         BookDetails details = new BookDetails();

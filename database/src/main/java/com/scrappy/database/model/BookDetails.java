@@ -4,11 +4,15 @@ package com.scrappy.database.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * Represents the BookDetails entity so as to persist it in the database.
+ *
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-20
+ */
+
 @Entity
 public class BookDetails {
-    /**
-     * DO NOT IMPLEMENT .toString() METHOD IN THIS CLASS! IT WILL CAUSE CYCLIC DEPENDENCY AND STACK OVERFLOW ERROR!
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
