@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public interface BookService {
-    Page<BookDTO> findAll(Pageable pageable);
+    Page<Book> findAll(Pageable pageable);
 
     List<BookDTO> findByTitle(String title);
 
