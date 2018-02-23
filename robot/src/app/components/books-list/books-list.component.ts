@@ -8,8 +8,6 @@ import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
 import {switchMap} from 'rxjs/operators/switchMap';
 
-
-
 @Component({
   selector: 'app-books-list',
   templateUrl: './books-list.component.html',
