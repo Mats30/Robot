@@ -31,11 +31,7 @@ public class BookController {
 
     @GetMapping("/all")
     public Page<Book> getBooks(Pageable pageable) {
-      service.save(new Book("abc"));
-      service.save(new Book("crf"));
-      service.save(new Book("bga"));
-      service.save(new Book("etr"));
-      service.save(new Book("dyu"));
+      
 
 
       return service.findAll(pageable);
