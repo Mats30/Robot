@@ -45,22 +45,30 @@ public class NiedzielaScrapper implements HtmlScrapper {
       final String booksContainer = "polecamy";
       final Elements elements = doc.getElementsByClass(booksContainer);
       elements.forEach(e -> {
-        final ScrappedBook scrappedBook = ScrappedBook.builder()
-                              .setTitle(retrieveTitleFrom(e))
-                              .setAuthor(retrieveAuthorFrom(e))
-                              .setListPrice(retrieveListPriceFrom(e))
-                              .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                              .setBookstore(BookStore.NIEDZIELA)
-                              .setUrl(retrieveUrlFrom(e))
-                              .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
-                              .build();
-        scrappedBooks.add(scrappedBook);
+        try {
+          addScrappedBook(scrappedBooks, e, BookStore.NIEDZIELA);
+        } catch (InterruptedException e1) {
+          e1.printStackTrace();
+        }
       });
       return scrappedBooks;
     } catch (IOException e) {
       e.printStackTrace();
     }
     return emptyList();
+  }
+
+  private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e, BookStore bookStore) throws InterruptedException {
+    scrappedBooks.add(ScrappedBook.builder()
+        .setAuthor(retrieveAuthorFrom(e))
+        .setBookstore(bookStore)
+        .setDiscountPrice(retrieveDiscountPriceFrom(e))
+        .setListPrice(retrieveListPriceFrom(e))
+        .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
+        .setTitle(retrieveTitleFrom(e))
+        .setUrl(retrieveUrlFrom(e))
+        .build());
+    Thread.sleep(1000);
   }
   
   protected Document retrievePromoBooks() throws IOException {
@@ -80,7 +88,7 @@ public class NiedzielaScrapper implements HtmlScrapper {
     final String titleContainer = "polecamy_tytul";
     return element.getElementsByClass(titleContainer).text();
   }
-  
+
   private String retrieveIsbnFrom(String url) {
     try {
       final Document doc = this.retrieveSinglePromoBook(url);

@@ -47,16 +47,11 @@ public class AksiazkaScrapper implements HtmlScrapper {
       final String booksContainer = "txtlistpoz";
       final Elements elements = doc.getElementsByClass(booksContainer);
       elements.forEach(e -> {
-        final ScrappedBook scrappedBook = ScrappedBook.builder()
-                              .setTitle(retrieveTitleFrom(e))
-                              .setAuthor(retrieveAuthorFrom(e))
-                              .setListPrice(retrieveListPriceFrom(e))
-                              .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                              .setBookstore(BookStore.AKSIAZKA)
-                              .setUrl(retrieveUrlFrom(e))
-                              .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
-                              .build();
-        scrappedBooks.add(scrappedBook);
+        try {
+          addScrappedBook(scrappedBooks, e, BookStore.AKSIAZKA);
+        } catch (InterruptedException e1) {
+          e1.printStackTrace();
+        }
       });
       return scrappedBooks;
     } catch (IOException e) {
@@ -64,7 +59,20 @@ public class AksiazkaScrapper implements HtmlScrapper {
     }
     return emptyList();
   }
-  
+
+  private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e, BookStore bookStore) throws InterruptedException {
+        scrappedBooks.add(ScrappedBook.builder()
+            .setAuthor(retrieveAuthorFrom(e))
+            .setBookstore(bookStore)
+            .setDiscountPrice(retrieveDiscountPriceFrom(e))
+            .setListPrice(retrieveListPriceFrom(e))
+            .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
+            .setTitle(retrieveTitleFrom(e))
+            .setUrl(retrieveUrlFrom(e))
+            .build());
+        Thread.sleep(1000);
+    }
+
   private String retrieveUrlFrom(Element element) {
     return BASE_URL + element.getElementsByTag("a").attr("href");
   }

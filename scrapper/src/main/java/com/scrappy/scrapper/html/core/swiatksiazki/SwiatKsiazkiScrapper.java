@@ -27,8 +27,6 @@ import java.util.regex.Pattern;
  */
 public class SwiatKsiazkiScrapper implements HtmlScrapper {
 
-    private static final String BOOKSTORE = "Świat Książki";
-
     private static final String BASE_URL = "https://www.swiatksiazki.pl";
 
     private static final String DISCOUNTS_URL = "/swiat-niskich-cen";
@@ -41,26 +39,36 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     public List<ScrappedBook> scrap() {
         List<ScrappedBook> scrappedBooks = new ArrayList<>();
         List<String> urlsToScrap = findPromotionUrls();
-
         urlsToScrap.forEach(url -> {
             try {
                 final Document doc = Jsoup.connect(url).get();
                 final String booksContainer = "product details product-item-details";
                 final Elements elements = doc.getElementsByClass(booksContainer);
-                elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
-                        .setAuthor(retrieveAuthorFrom(e))
-                        .setBookstore(BookStore.SWIAT_KSIAZKI)
-                        .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                        .setListPrice(retrieveListPriceFrom(e))
-                        .setIsbn(retrieveIsbnFrom(e))
-                        .setTitle(retrieveTitleFrom(e))
-                        .setUrl(retrieveUrlFrom(e))
-                        .build()));
+                elements.forEach(e -> {
+                    try {
+                        addScrappedBook(scrappedBooks, e, BookStore.SWIAT_KSIAZKI);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         return scrappedBooks;
+    }
+
+    private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e, BookStore bookStore) throws InterruptedException {
+                scrappedBooks.add(ScrappedBook.builder()
+                    .setAuthor(retrieveAuthorFrom(e))
+                    .setBookstore(bookStore)
+                    .setDiscountPrice(retrieveDiscountPriceFrom(e))
+                    .setListPrice(retrieveListPriceFrom(e))
+                    .setIsbn(retrieveIsbnFrom(e))
+                    .setTitle(retrieveTitleFrom(e))
+                    .setUrl(retrieveUrlFrom(e))
+                    .build());
+                Thread.sleep(1000);
     }
 
     List<ScrappedBook> scrapFromFile(File file) throws IOException {
