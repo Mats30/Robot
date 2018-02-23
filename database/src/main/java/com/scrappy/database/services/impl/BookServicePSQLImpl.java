@@ -1,5 +1,6 @@
 package com.scrappy.database.services.impl;
 
+import com.scrappy.database.converters.BookConverter;
 import com.scrappy.database.dto.BookDTO;
 import com.scrappy.database.dto.BookDetailsDTO;
 import com.scrappy.database.model.Book;
@@ -19,6 +20,7 @@ import java.util.List;
 @Component
 @BookServiceQualifier(type = BookServiceQualifier.BookServiceType.POSTGRESQL)
 public class BookServicePSQLImpl implements BookService {
+
   private BookRepository repository;
 
   @Autowired
@@ -28,9 +30,13 @@ public class BookServicePSQLImpl implements BookService {
 
   @Override
   public Page<Book> findAll(Pageable pageable) {
-
-
     return repository.findAll(pageable);
+  }
+
+  @Override
+  public List<BookDTO> findAll() {
+
+    return BookConverter.convert(repository.findAll());
   }
 
 

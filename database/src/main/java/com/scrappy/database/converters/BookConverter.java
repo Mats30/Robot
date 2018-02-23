@@ -2,8 +2,6 @@ package com.scrappy.database.converters;
 
 import com.scrappy.database.dto.BookDTO;
 import com.scrappy.database.model.Book;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

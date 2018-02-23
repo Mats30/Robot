@@ -19,9 +19,6 @@ public class BookDetails {
 
     private String genre;
 
-    @OneToOne
-    private Book book;
-
     public long getId() {
         return id;
     }
@@ -54,11 +51,4 @@ public class BookDetails {
         this.genre = genre;
     }
 
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
 }

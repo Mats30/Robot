@@ -1,5 +1,6 @@
 package com.scrappy.database.repositories;
 
+import com.scrappy.database.dto.BookDTO;
 import com.scrappy.database.model.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +13,8 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-
   List<Book> findBooksByTitle(String title);
 
 
-}
+  Page<Book> findAll(Pageable pageable);
+ }

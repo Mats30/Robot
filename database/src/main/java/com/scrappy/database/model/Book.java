@@ -15,7 +15,7 @@ public class Book {
 
     private String title;
 
-    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private BookDetails bookDetails;
 
     private String author;

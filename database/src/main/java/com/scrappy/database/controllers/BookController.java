@@ -29,19 +29,23 @@ public class BookController {
         return service.test();
     }
 
-    @GetMapping("/all")
-    public Page<Book> getBooks(Pageable pageable) {
-      
 
+  @GetMapping("/findAll")
+  public List<BookDTO> getAllBooks1() {
+
+    return service.findAll();
+  }
+
+  @GetMapping("/all")
+    public Page<Book> getBooks(Pageable pageable) {
+//      service.save(new Book("abc"));
+//      service.save(new Book("crf"));
+//      service.save(new Book("bga"));
+//      service.save(new Book("etr"));
+//      service.save(new Book("dyu"));
 
       return service.findAll(pageable);
     }
-
-
-//  private Pageable createPageRequest(int page, int size) {
-//    return new PageRequest(page, size);
-//  }
-
 
     @GetMapping("/byTitle")
     public List<BookDTO> getBooksByTitle(@RequestParam String title) {
@@ -51,7 +55,7 @@ public class BookController {
     @PostMapping(path = "/save", consumes = "application/json", produces = "application/json")
     public void save(@RequestBody Book book) {
         book.setBookDetails(book.getBookDetails());
-        book.getBookDetails().setBook(book);
+//        book.getBookDetails().setBook(book);
         service.save(book);
     }
 }
