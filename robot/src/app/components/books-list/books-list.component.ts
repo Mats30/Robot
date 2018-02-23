@@ -19,6 +19,7 @@ export class BooksListComponent implements OnInit{
   displayedColumns = ['title', 'author', 'bookStore', 'genre', 'promoPrice', "basePrice"];
   dataSource;
 
+  resultsLength = 0;
   isLoadingResults = true;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -37,14 +38,14 @@ export class BooksListComponent implements OnInit{
         switchMap(() => {
           this.isLoadingResults = true;
           return this.bookService!.getPagedBooksList(
-            this.sort.active,
-            this.sort.direction,
             this.paginator.pageIndex,
-            this.paginator.pageSize);
+            this.paginator.pageSize,
+            this.sort.active);
         }),
         map(data => {
           this.isLoadingResults = false;
-          return data;
+          this.resultsLength = data.totalElements;
+          return data.content;
         }),
         catchError(() => {
           this.isLoadingResults = false;

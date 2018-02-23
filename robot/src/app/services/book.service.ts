@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs/Observable";
 import {BooksApi} from "../entities/booksApi";
+import {isUndefined} from "util";
 
 @Injectable()
 export class BookService {
@@ -10,15 +11,16 @@ export class BookService {
   constructor(private http: HttpClient) {
   }
 
-  public getBooksList(url: string): Observable<BooksApi> {
-    return this.http.get<BooksApi>(this.host + url);
-  }
+  public getPagedBooksList(page: number, numberInPage: number, sort: string): Observable<BooksApi> {
+    if (isUndefined(numberInPage) || isUndefined(sort)) {
+      numberInPage = 5;
+      sort = "title";
+    }
 
-  public getPagedBooksList(sort: string, order: string, page: number, numberInPage: number): Observable<BooksApi> {
     const requestUrlParams =
-      `?sort=${sort}&order=${order}&page=${page + 1}&num=${numberInPage}`;
+      `?page=${page}&size=${numberInPage}&sort=${sort}`;
 
-    return this.http.get<BooksApi>(this.host + "/test" + requestUrlParams);
+    return this.http.get<BooksApi>(this.host + "/all" + requestUrlParams);
   }
 
 }
