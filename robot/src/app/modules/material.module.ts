@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {
-  MatFormFieldModule, MatInputModule, MatPaginatorIntl, MatPaginatorModule, MatSortModule, MatTableModule,
+  MatFormFieldModule, MatInputModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule,
+  MatTableModule,
   MatToolbarModule
 } from "@angular/material";
 import {MatPolishPaginator} from "../components/polishPaginator";
@@ -12,7 +13,8 @@ import {MatPolishPaginator} from "../components/polishPaginator";
     MatFormFieldModule,
     MatPaginatorModule,
     MatSortModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressSpinnerModule
   ],
   exports: [
     MatToolbarModule,
@@ -20,7 +22,8 @@ import {MatPolishPaginator} from "../components/polishPaginator";
     MatFormFieldModule,
     MatPaginatorModule,
     MatSortModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressSpinnerModule
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPolishPaginator}]
 })
