@@ -8,6 +8,7 @@ import com.scrappy.scrapper.html.core.swiatksiazki.SwiatKsiazkiScrapper;
 import com.scrappy.scrapper.postsender.PostSender;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.util.concurrent.*;
 
 /**

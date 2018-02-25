@@ -46,6 +46,7 @@
         <jsoup.version>1.11.2</jsoup.version>
         <!--Codegen-->
         <autovalue.version>1.5.3</autovalue.version>
+        <guava.version>24.0-jre</guava.version>
     </properties>
 
     <dependencyManagement>
@@ -161,6 +162,11 @@
                 <artifactId>auto-value</artifactId>
                 <version>${autovalue.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
