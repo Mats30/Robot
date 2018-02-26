@@ -18,7 +18,7 @@ public class EntityConverter {
         BookDetails details = new BookDetails();
         details.setBasePrice(scrappedBook.listPrice());
         details.setPromoPrice(scrappedBook.discountPrice());
-        details.setGenre("example");
+        details.setGenre(scrappedBook.genre());
         temp.setTitle(scrappedBook.title());
         temp.setAuthor(scrappedBook.author());
         temp.setBookDetails(details);

@@ -1,6 +1,7 @@
 package com.scrappy.scrapper.html;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.scrappy.scrapper.api.google.GoogleBooksProvider;
 import com.scrappy.scrapper.html.core.aksiazka.AksiazkaScrapper;
 import com.scrappy.scrapper.html.core.czytampl.CzytamplScrapper;
 import com.scrappy.scrapper.html.core.niedziela.NiedzielaScrapper;
@@ -22,13 +23,13 @@ public class App {
             .build();
 
     ScheduledExecutorService executor = Executors
-            .newScheduledThreadPool(5, scrappersThreadFactory);
+            .newScheduledThreadPool(6, scrappersThreadFactory);
 
     executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new NiedzielaScrapper()), 0, 24, TimeUnit.HOURS);
     executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new AksiazkaScrapper()), 0, 24, TimeUnit.HOURS);
     executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new CzytamplScrapper()), 0, 24, TimeUnit.HOURS);
     executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new SwiatKsiazkiScrapper()), 0, 24, TimeUnit.HOURS);
     executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new PwnScrapper()), 0, 24, TimeUnit.HOURS);
-
+    executor.scheduleAtFixedRate(() -> new PostSender(new RestTemplate()).send(new GoogleBooksProvider()), 0, 24, TimeUnit.HOURS);
   }
 }

@@ -50,6 +50,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-books</artifactId>
+            <version>v1-rev95-1.23.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>24.0-jre</version>
