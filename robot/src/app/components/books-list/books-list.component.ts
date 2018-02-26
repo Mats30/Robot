@@ -14,7 +14,7 @@ import {switchMap} from 'rxjs/operators/switchMap';
   styleUrls: ['./books-list.component.css']
 })
 export class BooksListComponent implements OnInit{
-  displayedColumns = ['title', 'author', 'bookStore', 'genre', 'promoPrice', "basePrice"];
+  displayedColumns = ['title', 'author', 'bookStore', 'bookDetails.genre', 'bookDetails.promoPrice', "bookDetails.basePrice"];
   dataSource;
 
   resultsLength = 0;

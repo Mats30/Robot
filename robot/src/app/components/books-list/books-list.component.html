@@ -23,17 +23,17 @@
       <mat-cell *matCellDef="let row"> {{row.bookStore}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="genre">
+    <ng-container matColumnDef="bookDetails.genre">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Kategoria</mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.bookDetails.genre}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="promoPrice">
+    <ng-container matColumnDef="bookDetails.promoPrice">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Nowa cena</mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.bookDetails.promoPrice | currency: 'PLN ' :'.2'}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="basePrice">
+    <ng-container matColumnDef="bookDetails.basePrice">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Stara cena</mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.bookDetails.basePrice | currency: 'PLN ' :'.2'}}</mat-cell>
     </ng-container>
