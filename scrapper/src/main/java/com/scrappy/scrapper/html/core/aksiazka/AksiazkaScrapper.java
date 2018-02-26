@@ -71,7 +71,11 @@ public class AksiazkaScrapper implements HtmlScrapper {
             .setUrl(retrieveUrlFrom(e))
             .setGenre("nieznana")
             .build());
-        Thread.sleep(1000);
+          sleep();
+    }
+
+    protected void sleep() throws InterruptedException {
+      Thread.sleep(1000);
     }
   
   private String retrieveUrlFrom(Element element) {

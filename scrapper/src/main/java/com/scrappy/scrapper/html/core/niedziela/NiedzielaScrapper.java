@@ -69,8 +69,12 @@ public class NiedzielaScrapper implements HtmlScrapper {
             .setUrl(retrieveUrlFrom(e))
             .setGenre(retrieveGenreFrom(e))
             .build());
-        Thread.sleep(1000);
+        sleep();
     }
+
+  protected void sleep() throws InterruptedException {
+    Thread.sleep(1000);
+  }
 
   protected Document retrievePromoBooks() throws IOException {
     return Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
