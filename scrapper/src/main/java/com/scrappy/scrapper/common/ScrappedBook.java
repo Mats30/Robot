@@ -20,7 +20,9 @@ abstract public class ScrappedBook {
   public abstract String isbn();
   
   public abstract String url();
-  
+
+  public abstract String genre();
+
   public static Builder builder() {
     return new AutoValue_ScrappedBook.Builder();
   }
@@ -40,7 +42,9 @@ abstract public class ScrappedBook {
     abstract public Builder setIsbn(String isbn);
     
     abstract public Builder setUrl(String url);
-    
+
+    abstract public Builder setGenre(String url);
+
     abstract public ScrappedBook build();
   }
   
