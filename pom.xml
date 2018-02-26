@@ -9,7 +9,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>scrapper</module>
-        <module>application</module>
         <module>database</module>
     </modules>
 
@@ -47,6 +46,7 @@
         <jsoup.version>1.11.2</jsoup.version>
         <!--Codegen-->
         <autovalue.version>1.5.3</autovalue.version>
+        <guava.version>24.0-jre</guava.version>
     </properties>
 
     <dependencyManagement>
@@ -100,7 +100,6 @@
                 <artifactId>commons-dbcp2</artifactId>
                 <version>${apache.commons.dbcp.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
@@ -163,6 +162,11 @@
                 <artifactId>auto-value</artifactId>
                 <version>${autovalue.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

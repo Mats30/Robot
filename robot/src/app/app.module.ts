@@ -7,7 +7,6 @@ import {MaterialModule} from "./modules/material.module";
 import {BooksListComponent} from './components/books-list/books-list.component';
 import {RouterModule} from "@angular/router";
 import {BookService} from "./services/book.service";
-import {UtilityService} from "./services/utility.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
@@ -22,7 +21,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     MaterialModule,
     RouterModule
   ],
-  providers: [UtilityService, BookService],
+  providers: [BookService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

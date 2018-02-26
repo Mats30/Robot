@@ -1,13 +1,15 @@
-<div class="header">
-  <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filtruj">
-  </mat-form-field>
-</div>
+<div class="container mat-elevation-z8">
+  <div class="loading-shade"
+       *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
 
-<div class="mat-elevation-z8">
-  <mat-table [dataSource]="dataSource" matSort>
+  <mat-table #table class="table" [dataSource]="dataSource" matSort matSortActive="title" matSortDisableClear
+             matSortDirection="asc">
+
     <ng-container matColumnDef="title">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Tytuł</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true"> Tytuł
+      </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.title}}</mat-cell>
     </ng-container>
 
@@ -16,35 +18,30 @@
       <mat-cell *matCellDef="let row"> {{row.author}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="bookshop">
+    <ng-container matColumnDef="bookStore">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Księgarnia</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.bookshop}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookStore}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="category">
+    <ng-container matColumnDef="bookDetails.genre">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Kategoria</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.category}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookDetails.genre}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="new_price">
+    <ng-container matColumnDef="bookDetails.promoPrice">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Nowa cena</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.new_price | number :'1.2-2' | currency: 'PLN '}}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookDetails.promoPrice | currency: 'PLN ' :'.2'}}</mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="old_price">
+    <ng-container matColumnDef="bookDetails.basePrice">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Stara cena</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.old_price | number :'1.2-2' | currency: 'PLN '}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="url">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Link</mat-header-cell>
-      <mat-cell *matCellDef="let row"><a target="_blank" href="{{row.url}}">Kup</a></mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookDetails.basePrice | currency: 'PLN ' :'.2'}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;">
     </mat-row>
   </mat-table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+  <mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 25]" [pageSize]="5"></mat-paginator>
 
 </div>

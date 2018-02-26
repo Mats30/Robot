@@ -27,13 +27,15 @@ import java.util.regex.Pattern;
  */
 public class SwiatKsiazkiScrapper implements HtmlScrapper {
 
-    private static final String BASE_URL = "https://www.swiatksiazki.pl";
+  private static final BookStore BOOKSTORE = BookStore.SWIAT_KSIAZKI;
 
-    private static final String DISCOUNTS_URL = "/swiat-niskich-cen";
+  private static final String BASE_URL = "https://www.swiatksiazki.pl";
 
-    private static final String ISBN_REGEX = "\\d{13}";
+  private static final String DISCOUNTS_URL = "/swiat-niskich-cen";
 
-    private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
+  private static final String ISBN_REGEX = "\\d{13}";
+
+  private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
 
     @Override
     public List<ScrappedBook> scrap() {
@@ -59,97 +61,114 @@ public class SwiatKsiazkiScrapper implements HtmlScrapper {
     }
 
     private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e, BookStore bookStore) throws InterruptedException {
-                scrappedBooks.add(ScrappedBook.builder()
-                    .setAuthor(retrieveAuthorFrom(e))
-                    .setBookstore(bookStore)
-                    .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                    .setListPrice(retrieveListPriceFrom(e))
-                    .setIsbn(retrieveIsbnFrom(e))
-                    .setTitle(retrieveTitleFrom(e))
-                    .setUrl(retrieveUrlFrom(e))
-                    .build());
-                Thread.sleep(1000);
+        scrappedBooks.add(ScrappedBook.builder()
+            .setAuthor(retrieveAuthorFrom(e))
+            .setBookstore(bookStore)
+            .setDiscountPrice(retrieveDiscountPriceFrom(e))
+            .setListPrice(retrieveListPriceFrom(e))
+            .setIsbn(retrieveIsbnFrom(e))
+            .setTitle(retrieveTitleFrom(e))
+            .setUrl(retrieveUrlFrom(e))
+            .setGenre(retrieveGenreFrom(e))
+            .build());
+        Thread.sleep(1000);
     }
 
-    List<ScrappedBook> scrapFromFile(File file) throws IOException {
-        List<ScrappedBook> scrappedBooks = new ArrayList<>();
-        final Document doc = Jsoup.parse(file, "UTF-8", "");
-        final String booksContainer = "product details product-item-details";
-        final Elements elements = doc.getElementsByClass(booksContainer);
-        elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
-                .setAuthor(retrieveAuthorFrom(e))
-                .setBookstore(BookStore.SWIAT_KSIAZKI)
-                .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                .setListPrice(retrieveListPriceFrom(e))
-                .setIsbn(retrieveIsbnFrom(e))
-                .setTitle(retrieveTitleFrom(e))
-                .setUrl(retrieveUrlFrom(e))
-                .build()));
-        return scrappedBooks;
-    }
+  List<ScrappedBook> scrapFromFile(File file) throws IOException {
+    List<ScrappedBook> scrappedBooks = new ArrayList<>();
+    final Document doc = Jsoup.parse(file, "UTF-8", "");
+    final String booksContainer = "product details product-item-details";
+    final Elements elements = doc.getElementsByClass(booksContainer);
+    elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
+            .setAuthor(retrieveAuthorFrom(e))
+            .setBookstore(BOOKSTORE)
+            .setDiscountPrice(retrieveDiscountPriceFrom(e))
+            .setListPrice(retrieveListPriceFrom(e))
+            .setIsbn(retrieveIsbnFrom(e))
+            .setTitle(retrieveTitleFrom(e))
+            .setUrl(retrieveUrlFrom(e))
+            .setGenre(retrieveGenreFrom(e))
+            .build()));
+    return scrappedBooks;
+  }
 
-    private String retrieveAuthorFrom(Element element) {
-        final String authorContainer = "product author product-item-author";
-        return element.getElementsByClass(authorContainer).text();
-    }
+  private String retrieveGenreFrom(Element element) {
+    return retrieveGenreFrom(retrieveUrlFrom(element));
+  }
 
-    private String retrieveTitleFrom(Element element) {
-        final String titleContainer = "product name product-item-name";
-        return element.getElementsByClass(titleContainer).text();
-    }
+  private String retrieveAuthorFrom(Element element) {
+    final String authorContainer = "product author product-item-author";
+    return element.getElementsByClass(authorContainer).text();
+  }
 
-    private BigDecimal retrieveDiscountPriceFrom(Element element) {
-        final String discountPriceContainer = "special-price";
-        return retrievePriceFrom(element.getElementsByClass(discountPriceContainer).text());
-    }
+  private String retrieveTitleFrom(Element element) {
+    final String titleContainer = "product name product-item-name";
+    return element.getElementsByClass(titleContainer).text();
+  }
 
-    private BigDecimal retrieveListPriceFrom(Element element) {
-        final String listPriceContainer = "old-price";
-        return retrievePriceFrom(element.getElementsByClass(listPriceContainer).text());
-    }
+  private BigDecimal retrieveDiscountPriceFrom(Element element) {
+    final String discountPriceContainer = "special-price";
+    return retrievePriceFrom(element.getElementsByClass(discountPriceContainer).text());
+  }
 
-    private String retrieveIsbnFrom(Element element) {
-        final String isbnContainer = "product-item-link";
-        return retrieveIsbnFrom(element.getElementsByClass(isbnContainer).attr("href"));
-    }
+  private BigDecimal retrieveListPriceFrom(Element element) {
+    final String listPriceContainer = "old-price";
+    return retrievePriceFrom(element.getElementsByClass(listPriceContainer).text());
+  }
 
-    private String retrieveUrlFrom(Element element) {
-        final String urlContainer = "product-item-link";
-        return element.getElementsByClass(urlContainer).attr("href");
-    }
+  private String retrieveIsbnFrom(Element element) {
+    final String isbnContainer = "product-item-link";
+    return retrieveIsbnFrom(element.getElementsByClass(isbnContainer).attr("href"));
+  }
 
-    private BigDecimal retrievePriceFrom(String pattern) {
-        if (pattern.isEmpty()) return BigDecimal.ZERO;
-        String price = pattern.split(" ")[0].replaceAll(",", ".");
-        return BigDecimal.valueOf(Double.parseDouble(price));
-    }
+  private String retrieveUrlFrom(Element element) {
+    final String urlContainer = "product-item-link";
+    return element.getElementsByClass(urlContainer).attr("href");
+  }
 
-    private String retrieveIsbnFrom(String url) {
-        try {
-            final Document doc = Jsoup.connect(url).get();
-            final Elements elements = doc.getElementsMatchingOwnText(ISBN_REGEX);
-            String result = elements.get(0).toString();
-            Matcher matcher = ISBN_PATTERN.matcher(result);
-            matcher.find();
-            return matcher.group();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+  private BigDecimal retrievePriceFrom(String pattern) {
+    if (pattern.isEmpty()) return BigDecimal.ZERO;
+    String price = pattern.split(" ")[0].replaceAll(",", ".");
+    return BigDecimal.valueOf(Double.parseDouble(price));
+  }
 
-    private List<String> findPromotionUrls() {
-        List<String> links = new ArrayList<>();
-        try {
-            final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
-            final String promotionUrlsContainer = "col-sm-6 col-md-5 no-padding hidden-xs";
-            final Elements elements = doc.getElementsByClass(promotionUrlsContainer).tagName("a");
-            elements.stream()
-                    .filter(Objects::nonNull)
-                    .forEach(e -> links.add(e.getElementsByTag("a").attr("href")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return links;
+  private String retrieveIsbnFrom(String url) {
+    try {
+      final Document doc = Jsoup.connect(url).get();
+      final Elements elements = doc.getElementsMatchingOwnText(ISBN_REGEX);
+      String result = elements.get(0).toString();
+      Matcher matcher = ISBN_PATTERN.matcher(result);
+      matcher.find();
+      return matcher.group();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return "";
+  }
+
+  private String retrieveGenreFrom(String url) {
+    try {
+      final Document doc = Jsoup.connect(url).get();
+      final Elements genre = doc.getElementsMatchingOwnText("Książki /");
+      return genre.get(0).text().replaceAll(" / ", ",").split(",")[1];
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return "";
+  }
+
+  private List<String> findPromotionUrls() {
+    List<String> links = new ArrayList<>();
+    try {
+      final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
+      final String promotionUrlsContainer = "col-sm-6 col-md-5 no-padding hidden-xs";
+      final Elements elements = doc.getElementsByClass(promotionUrlsContainer).tagName("a");
+      elements.stream()
+              .filter(Objects::nonNull)
+              .forEach(e -> links.add(e.getElementsByTag("a").attr("href")));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return links;
+  }
 }

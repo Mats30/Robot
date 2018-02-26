@@ -1,18 +1,26 @@
 package com.scrappy.database.controllers;
 
-import com.scrappy.database.dto.BookDTO;
 import com.scrappy.database.model.Book;
-import com.scrappy.database.model.BookDetails;
 import com.scrappy.database.services.BookService;
 import com.scrappy.database.services.BookServiceQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
+/**
+ * Exposes REST endpoints for clients to obtain data from.
+ *
+ * @version 1.0-SNAPSHOT
+ * @since 2018-02-20
+ */
 
 @RestController
 @RequestMapping("/books")
+@CrossOrigin(origins = "http://localhost:4200")
 public class BookController {
+
     private BookService service;
 
     @Autowired
@@ -21,25 +29,16 @@ public class BookController {
         this.service = service;
     }
 
-    @GetMapping("/test")
-    public List<BookDTO> getAllBooks() {
-        return service.test();
-    }
 
     @GetMapping("/all")
-    public List<BookDTO> getBooks() {
-        return service.findAll();
-    }
+    public Page<Book> getBooks(Pageable pageable) {
 
-    @GetMapping("/byTitle")
-    public List<BookDTO> getBooksByTitle(@RequestParam String title) {
-        return service.findByTitle(title);
+        return service.findAll(pageable);
     }
 
     @PostMapping(path = "/save", consumes = "application/json", produces = "application/json")
     public void save(@RequestBody Book book) {
         book.setBookDetails(book.getBookDetails());
-        book.getBookDetails().setBook(book);
         service.save(book);
     }
 }

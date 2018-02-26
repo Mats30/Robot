@@ -2,6 +2,7 @@
 //
 //import com.scrappy.scrapper.common.ScrappedBook;
 //import com.scrappy.scrapper.html.api.HtmlScrapper;
+//import com.scrappy.scrapper.html.model.BookStore;
 //import org.jsoup.Jsoup;
 //import org.jsoup.nodes.Document;
 //import org.testng.annotations.Test;
@@ -21,14 +22,15 @@
 //    final HtmlScrapper htmlScrapper = new FileAksiazkaScrapper();
 //    //when
 //    final ScrappedBook book = ScrappedBook.builder()
-//                          .setAuthor("Bernadette McDonald, Maciej Krupa")
-//                          .setBookstore("Księgarnia aksiazka.pl")
-//                          .setDiscountPrice(BigDecimal.valueOf(29.8))
-//                          .setListPrice(BigDecimal.valueOf(44.99))
-//                          .setIsbn("9788326826092")
-//                          .setTitle("Kurtyka. Sztuka wolności")
-//                          .setUrl("https://aksiazka.pl/produkt-374296,kurtyka-sztuka-wolnosci")
-//                          .build();
+//            .setAuthor("Bernadette McDonald, Maciej Krupa")
+//            .setBookstore(BookStore.AKSIAZKA)
+//            .setDiscountPrice(BigDecimal.valueOf(29.8))
+//            .setListPrice(BigDecimal.valueOf(44.99))
+//            .setIsbn("9788326826092")
+//            .setTitle("Kurtyka. Sztuka wolności")
+//            .setUrl("https://aksiazka.pl/produkt-374296,kurtyka-sztuka-wolnosci")
+//            .setGenre("nieznana")
+//            .build();
 //    final List<ScrappedBook> books = htmlScrapper.scrap();
 //    //then
 //    assertThat(books).contains(book);
