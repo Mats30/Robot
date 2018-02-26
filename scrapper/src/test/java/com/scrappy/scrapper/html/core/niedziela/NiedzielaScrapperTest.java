@@ -5,6 +5,7 @@ import com.scrappy.scrapper.html.api.HtmlScrapper;
 import com.scrappy.scrapper.html.model.BookStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class NiedzielaScrapperTest {
             .setIsbn("978-83-62515-31")
             .setTitle("Jestem od poczęcia. Pamiętnik dziecka w pierwszej fazie życia")
             .setUrl("https://ksiegarnia.niedziela.pl//site/ksiazka/377/")
-            .setGenre("Pedagogika")
+            .setGenre("")
             .build();
     final List<ScrappedBook> books = htmlScrapper.scrap();
     //then
@@ -49,4 +50,12 @@ class FileNiedzielaScrapper extends NiedzielaScrapper {
     File input = new File("src/test/resources/niedziela/product.html");
     return Jsoup.parse(input, "UTF-8", "");
   }
+
+  @Override
+  protected String retrieveGenreFrom(String url) {
+    return "";
+  }
+
+  @Override
+  protected void sleep() throws InterruptedException {}
 }

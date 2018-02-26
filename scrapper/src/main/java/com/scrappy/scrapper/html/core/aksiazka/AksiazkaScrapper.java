@@ -41,29 +41,43 @@ public class AksiazkaScrapper implements HtmlScrapper {
    */
   @Override
   public List<ScrappedBook> scrap() {
-    try {
-      final List<ScrappedBook> scrappedBooks = new ArrayList<>();
-      final Document doc = this.retrievePromoBooks();
-      final String booksContainer = "txtlistpoz";
-      final Elements elements = doc.getElementsByClass(booksContainer);
-
-      elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
-              .setTitle(retrieveTitleFrom(e))
-              .setAuthor(retrieveAuthorFrom(e))
-              .setListPrice(retrieveListPriceFrom(e))
-              .setDiscountPrice(retrieveDiscountPriceFrom(e))
-              .setBookstore(BOOKSTORE)
-              .setUrl(retrieveUrlFrom(e))
-              .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
-              .setGenre("nieznana")
-              .build()));
-      return scrappedBooks;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return emptyList();
+      try {
+          final List<ScrappedBook> scrappedBooks = new ArrayList<>();
+          final Document doc = this.retrievePromoBooks();
+          final String booksContainer = "txtlistpoz";
+          final Elements elements = doc.getElementsByClass(booksContainer);
+          elements.forEach(e -> {
+              try {
+                  addScrappedBook(scrappedBooks, e);
+              } catch (InterruptedException e1) {
+                  e1.printStackTrace();
+              }
+          });
+          return scrappedBooks;
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      return emptyList();
   }
 
+    private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e) throws InterruptedException {
+        scrappedBooks.add(ScrappedBook.builder()
+            .setAuthor(retrieveAuthorFrom(e))
+            .setBookstore(BOOKSTORE)
+            .setDiscountPrice(retrieveDiscountPriceFrom(e))
+            .setListPrice(retrieveListPriceFrom(e))
+            .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
+            .setTitle(retrieveTitleFrom(e))
+            .setUrl(retrieveUrlFrom(e))
+            .setGenre("nieznana")
+            .build());
+          sleep();
+    }
+
+    protected void sleep() throws InterruptedException {
+      Thread.sleep(1000);
+    }
+  
   private String retrieveUrlFrom(Element element) {
     return BASE_URL + element.getElementsByTag("a").attr("href");
   }

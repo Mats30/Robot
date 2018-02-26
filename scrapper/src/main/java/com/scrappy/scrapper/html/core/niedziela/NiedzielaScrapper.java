@@ -39,29 +39,41 @@ public class NiedzielaScrapper implements HtmlScrapper {
    */
   @Override
   public List<ScrappedBook> scrap() {
-    try {
-      final List<ScrappedBook> scrappedBooks = new ArrayList<>();
-      final Document doc = this.retrievePromoBooks();
-      final String booksContainer = "polecamy";
-      final Elements elements = doc.getElementsByClass(booksContainer);
-      elements.forEach(e -> {
-        final ScrappedBook scrappedBook = ScrappedBook.builder()
-                .setTitle(retrieveTitleFrom(e))
-                .setAuthor(retrieveAuthorFrom(e))
-                .setListPrice(retrieveListPriceFrom(e))
-                .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                .setBookstore(BOOKSTORE)
-                .setUrl(retrieveUrlFrom(e))
-                .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
-                .setGenre(retrieveGenreFrom(e))
-                .build();
-        scrappedBooks.add(scrappedBook);
-      });
-      return scrappedBooks;
-    } catch (IOException e) {
-      e.printStackTrace();
+      try {
+          final List<ScrappedBook> scrappedBooks = new ArrayList<>();
+          final Document doc = this.retrievePromoBooks();
+          final String booksContainer = "polecamy";
+          final Elements elements = doc.getElementsByClass(booksContainer);
+          elements.forEach(e -> {
+              try {
+                  addScrappedBook(scrappedBooks, e);
+              } catch (InterruptedException e1) {
+                  e1.printStackTrace();
+              }
+          });
+          return scrappedBooks;
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      return emptyList();
+  }
+
+    private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e) throws InterruptedException {
+        scrappedBooks.add(ScrappedBook.builder()
+            .setAuthor(retrieveAuthorFrom(e))
+            .setBookstore(BOOKSTORE)
+            .setDiscountPrice(retrieveDiscountPriceFrom(e))
+            .setListPrice(retrieveListPriceFrom(e))
+            .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
+            .setTitle(retrieveTitleFrom(e))
+            .setUrl(retrieveUrlFrom(e))
+            .setGenre(retrieveGenreFrom(e))
+            .build());
+        sleep();
     }
-    return emptyList();
+
+  protected void sleep() throws InterruptedException {
+    Thread.sleep(1000);
   }
 
   protected Document retrievePromoBooks() throws IOException {
@@ -82,6 +94,7 @@ public class NiedzielaScrapper implements HtmlScrapper {
     return element.getElementsByClass(titleContainer).text();
   }
 
+
   private String retrieveGenreFrom(Element element) {
     return retrieveGenreFrom(retrieveUrlFrom(element));
   }
@@ -100,7 +113,7 @@ public class NiedzielaScrapper implements HtmlScrapper {
     return "";
   }
 
-  private String retrieveGenreFrom(String url) {
+  protected String retrieveGenreFrom(String url) {
     try {
       final Document doc = Jsoup.connect(url).get();
       final Elements genre = doc.getElementsByTag("strong");

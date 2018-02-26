@@ -36,32 +36,43 @@ public class CzytamplScrapper implements HtmlScrapper {
 
   private static final Pattern ISBN_PATTERN = Pattern.compile(ISBN_REGEX);
 
-  @Override
-  public List<ScrappedBook> scrap() {
-    List<ScrappedBook> scrappedBooks = new ArrayList<>();
-    List<String> urlsToScrap = findPromotionUrls();
+    @Override
+    public List<ScrappedBook> scrap() {
+        List<ScrappedBook> scrappedBooks = new ArrayList<>();
+        List<String> urlsToScrap = findPromotionUrls();
 
-    urlsToScrap.forEach(url -> {
-      try {
-        final Document doc = Jsoup.connect(url).get();
-        final String booksContainer = "col-small-info";
-        final Elements elements = doc.getElementsByClass(booksContainer);
-        elements.forEach(e -> scrappedBooks
-                .add(ScrappedBook.builder()
-                        .setAuthor(retrieveAuthorFrom(e))
-                        .setBookstore(BookStore.CZYTAM)
-                        .setDiscountPrice(retrieveDiscountPriceFrom(e))
-                        .setListPrice(retrieveListPriceFrom(e))
-                        .setIsbn(retrieveIsbnFrom(e))
-                        .setTitle(retrieveTitleFrom(e))
-                        .setUrl(retrieveUrlFrom(e))
-                        .build()));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    });
-    return scrappedBooks;
-  }
+        urlsToScrap.forEach(url -> {
+            try {
+                final Document doc = Jsoup.connect(url).get();
+                final String booksContainer = "col-small-info";
+                final Elements elements = doc.getElementsByClass(booksContainer);
+                elements.forEach(e -> {
+                    try {
+                        addScrappedBook(scrappedBooks, e);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return scrappedBooks;
+    }
+
+    private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e) throws InterruptedException {
+        scrappedBooks.add(ScrappedBook.builder()
+            .setAuthor(retrieveAuthorFrom(e))
+            .setBookstore(BOOKSTORE)
+            .setDiscountPrice(retrieveDiscountPriceFrom(e))
+            .setListPrice(retrieveListPriceFrom(e))
+            .setIsbn(retrieveIsbnFrom(e))
+            .setTitle(retrieveTitleFrom(e))
+            .setUrl(retrieveUrlFrom(e))
+            .setGenre(retrieveGenreFrom(e))
+            .build());
+        Thread.sleep(1000);
+    }
 
   List<ScrappedBook> scrapFromFile(File file) throws IOException {
     List<ScrappedBook> scrappedBooks = new ArrayList<>();

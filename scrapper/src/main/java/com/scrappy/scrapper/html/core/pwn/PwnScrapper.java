@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Collections.emptyList;
+
 public class PwnScrapper implements HtmlScrapper {
   private static final String BASE_URL = "https://ksiegarnia.pwn.pl";
 
@@ -34,20 +36,32 @@ public class PwnScrapper implements HtmlScrapper {
     try {
       final Document doc = Jsoup.connect(BASE_URL + DISCOUNTS_URL).get();
       final Elements elements = doc.getElementsByClass("emp-product-hover");
-      elements.forEach(e -> scrappedBooks.add(ScrappedBook.builder()
-              .setAuthor(retrieveAuthorFrom(e))
-              .setTitle(retrieveTitleFrom(e))
-              .setListPrice(retrieveListPriceFrom(e))
-              .setDiscountPrice(retrieveDiscountPriceFrom(e))
-              .setUrl(retrieveUrlFrom(e))
-              .setIsbn(retrieveIsbnFrom(e))
-              .setBookstore(BOOKSTORE)
-              .setGenre(retrieveGenreFrom(e))
-              .build()));
+      elements.forEach(e -> {
+        try {
+          addScrappedBook(scrappedBooks, e);
+        } catch (InterruptedException e1) {
+          e1.printStackTrace();
+        }
+      });
+      return scrappedBooks;
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return scrappedBooks;
+    return emptyList();
+  }
+
+  private void addScrappedBook(List<ScrappedBook> scrappedBooks, Element e) throws InterruptedException {
+    scrappedBooks.add(ScrappedBook.builder()
+        .setAuthor(retrieveAuthorFrom(e))
+        .setBookstore(BOOKSTORE)
+        .setDiscountPrice(retrieveDiscountPriceFrom(e))
+        .setListPrice(retrieveListPriceFrom(e))
+        .setIsbn(retrieveIsbnFrom(retrieveUrlFrom(e)))
+        .setTitle(retrieveTitleFrom(e))
+        .setUrl(retrieveUrlFrom(e))
+        .setGenre(retrieveGenreFrom(e))
+        .build());
+    Thread.sleep(1000);
   }
 
   List<ScrappedBook> scrapFromFile(File file) throws IOException {

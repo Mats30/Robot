@@ -50,4 +50,7 @@ class FileAksiazkaScrapper extends AksiazkaScrapper {
     File input = new File("src/test/resources/aksiazka/product.html");
     return Jsoup.parse(input, "UTF-8", "");
   }
+
+  @Override
+  protected void sleep() throws InterruptedException {}
 }
