@@ -32,7 +32,7 @@ public class PostSender {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
       HttpEntity<com.scrappy.scrapper.html.model.Book> entity = new HttpEntity<>(book, headers);
-      template.exchange("http://localhost:8080/books/save", HttpMethod.POST, entity, String.class);
+      template.exchange("http://147.135.210.145:8080/database-1.0-RC/books/save", HttpMethod.POST, entity, String.class);
     });
   }
 

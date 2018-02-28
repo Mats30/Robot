@@ -6,7 +6,7 @@ import {isUndefined} from "util";
 
 @Injectable()
 export class BookService {
-  private host: string = "147.135.210.145:8080/database-1.0-RC/books";
+  private host: string = "http://147.135.210.145:8080/database-1.0-RC/books";
 
   constructor(private http: HttpClient) {
   }
