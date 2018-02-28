@@ -1,0 +1,47 @@
+<div class="container mat-elevation-z8">
+  <div class="loading-shade"
+       *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+
+  <mat-table #table class="table" [dataSource]="dataSource" matSort matSortActive="title" matSortDisableClear
+             matSortDirection="asc">
+
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true"> Tytuł
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.title}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="author">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Autor/Autorzy</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.author}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bookStore">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Księgarnia</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookStore}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bookDetails.genre">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Kategoria</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookDetails.genre}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bookDetails.promoPrice">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Nowa cena</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookDetails.promoPrice | currency: 'PLN ' :'.2'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bookDetails.basePrice">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Stara cena</mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.bookDetails.basePrice | currency: 'PLN ' :'.2'}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+  </mat-table>
+  <mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 25]" [pageSize]="5"></mat-paginator>
+
+</div>
