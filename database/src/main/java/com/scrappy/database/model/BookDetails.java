@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 /**
  * Represents the BookDetails entity so as to persist it in the database.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 

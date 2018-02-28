@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * data about promotions.
  *
  * @author Mateusz Tapa
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-21
  */
 public class SwiatKsiazkiScrapper implements HtmlScrapper {

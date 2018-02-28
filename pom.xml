@@ -6,7 +6,7 @@
     <groupId>com.robot</groupId>
     <artifactId>robot</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-RC</version>
     <modules>
         <module>scrapper</module>
         <module>database</module>
@@ -42,7 +42,7 @@
         <springdata.rest.version>3.0.4.RELEASE</springdata.rest.version>
         <apache.commons.dbcp.version>2.0</apache.commons.dbcp.version>
         <javax.servlet.version>4.0.0</javax.servlet.version>
-	    <!--Scrapping-->
+        <!--Scrapping-->
         <jsoup.version>1.11.2</jsoup.version>
         <!--Codegen-->
         <autovalue.version>1.5.3</autovalue.version>

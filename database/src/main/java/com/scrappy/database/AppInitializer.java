@@ -6,7 +6,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 /**
  * It provides basic Spring configuration.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 /**
  * It allows to specify the qualifier in a neat and secure way.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 

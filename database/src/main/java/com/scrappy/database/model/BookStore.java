@@ -3,7 +3,7 @@ package com.scrappy.database.model;
 /**
  * Represents the BookStores that data is obtained from.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 

@@ -38,7 +38,8 @@ export class BooksListComponent implements OnInit{
           return this.bookService!.getPagedBooksList(
             this.paginator.pageIndex,
             this.paginator.pageSize,
-            this.sort.active);
+            this.sort.active,
+            this.sort.direction);
         }),
         map(data => {
           this.isLoadingResults = false;

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * It defines the methods that need to appear in the service layer implementation.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 

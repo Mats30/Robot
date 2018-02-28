@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * It configures the database access.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 

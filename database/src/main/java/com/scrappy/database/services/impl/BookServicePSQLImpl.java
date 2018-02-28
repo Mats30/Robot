@@ -8,16 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
 /**
  * It provides the service layer that serves as an intermediary between the controller and the repository.
  *
- * @version 1.0-SNAPSHOT
+ * @version 1.0-RC
  * @since 2018-02-20
  */
 
 @Component
+@Service
 @BookServiceQualifier(type = BookServiceQualifier.BookServiceType.POSTGRESQL)
 public class BookServicePSQLImpl implements BookService {
 
